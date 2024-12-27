@@ -1,10 +1,10 @@
 {
-  "name": "library-template",
+  "name": "fgo-api-playground",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
   "author": "YOUR_NAME_HERE",
-  "repository": "foxkit-js/library-template",
+  "repository": "mitsunee/fgo-api-playground",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -15,9 +15,7 @@
     "format:check": "prettier -c .",
     "lint": "eslint .",
     "lint:strict": "eslint --max-warnings 0 .",
-    "typecheck": "tsc",
-    "test": "uvu -r esbuild-register tests -i utils",
-    "build": "node build.js && tsc -p tsconfig.build.json"
+    "typecheck": "tsc"
   },
   "nano-staged": {
     "**/*.{js,cjs,mjs,ts,mts,cts,json,md,yaml}": [
@@ -27,39 +25,16 @@
   "simple-git-hooks": {
     "pre-commit": "pnpm nano-staged"
   },
-  "files": [
-    "*.d.ts",
-    "index.*"
-  ],
-  "clean-publish": {
-    "packageManager": "pnpm",
-    "withoutPublish": true,
-    "tempDir": "dist",
-    "fields": [
-      "scripts",
-      "nano-staged",
-      "simple-git-hooks"
-    ]
-  },
-  "publishConfig": {
-    "publishConfig": {
-      "access": "public"
-    },
-    "private": false,
-    "main": "index.cjs",
-    "module": "index.js",
-    "types": "index.d.ts"
-  },
   "devDependencies": {
-    "esbuild": "^0.23.1",
-    "esbuild-register": "^3.6.0",
     "eslint": "^8.57.0",
-    "eslint-config-foxkit": "4.1.0",
+    "eslint-config-foxkit": "4.1.2",
     "eslint-config-prettier": "^9.1.0",
     "nano-staged": "^0.8.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "simple-git-hooks": "^2.11.1",
-    "typescript": "5.5.4",
-    "uvu": "^0.5.6"
+    "typescript": "5.6.3"
+  },
+  "dependencies": {
+    "tsx": "^4.19.2"
   }
 }
