@@ -1,5 +1,9 @@
 # Notes
 
+## Misc
+
+- Github CI runs with node v20, should be 22 (did I copy this from the flyffu api playground or is that one updated?)
+
 ## Data Assumptions to prove
 
 - See Upgrade Levels below
