@@ -15,10 +15,6 @@ type ServantClass =
   | "foreigner"
   | "beastEresh";
 
-// WIP
-// TODO: needs materials for skills, appends, costumes, ascension
-// TODO: how to handle event welfares?
-// TODO: how to handle Mashu?
 interface Servant {
   id: number;
   name: string;
@@ -28,6 +24,12 @@ interface Servant {
   cost: number;
   className: ServantClass;
   gender: "male" | "female" | "unknown";
+  ascensionMaterials?: Array<UpgradeStage>;
   skills: Array<number>;
+  skillMaterials: Array<UpgradeStage>;
+  appendSkills: Array<number>;
+  appendSkillMaterials: Array<UpgradeStage>;
+  passiveSkills: Array<number>;
   noblePhantasms: Array<number>;
+  costumes: Array<Costume>;
 }
