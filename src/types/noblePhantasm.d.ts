@@ -1,6 +1,4 @@
-interface ServantNP {
-  id: number;
-  name: string;
+interface ServantNP extends EntityBase {
   card: CardType;
   detail: string;
   owner: number;

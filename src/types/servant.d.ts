@@ -15,9 +15,7 @@ type ServantClass =
   | "foreigner"
   | "beastEresh";
 
-interface Servant {
-  id: number;
-  name: string;
+interface Servant extends EntityBase {
   names: string[];
   collectionNo: number;
   rarity: number;

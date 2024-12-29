@@ -1,6 +1,4 @@
-interface Costume {
-  id: number;
+interface Costume extends EntityBase {
   owner: number;
-  name: string;
   unlock: UpgradeStage;
 }

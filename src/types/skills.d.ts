@@ -12,9 +12,7 @@ interface SkillOwner {
   upgradeLevelMax: number;
 }
 
-interface ServantSkill {
-  id: number;
-  name: string;
+interface ServantSkill extends EntityBase {
   type: "active" | "passive" | "append";
   detail: string;
   owners: Array<SkillOwner>;
