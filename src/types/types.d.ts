@@ -1,5 +1,5 @@
 type ID = number | `${number}`;
-
+type SupportedRegion = "EN" | "JP";
 type CardType = "buster" | "arts" | "quick";
 type FaceCardType = CardType | "extra";
 
