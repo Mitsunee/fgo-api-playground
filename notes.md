@@ -1,5 +1,10 @@
 # Notes
 
+## TODO
+
+- Hardcode Mashu/Mashu(Ortinax) as separte Servants
+- Hardcode special cases for Melusine (Lancer)
+
 ## Data Assumptions to prove
 
 - See Upgrade Levels below
@@ -26,6 +31,10 @@ Since Mashu can essentially swap out her skill sets her skills' values behave we
 
 Should be covered now
 
+### Melusine Special Cases
+
+Melusine's skills look like a skill upgrade with the above rules. Unsure how to handle it yet. The id of the alternate version seems to end in 5, which might be usual?
+
 ## NPs
 
 strengthstatus seems to increase from 1 to 99 when upgrading, with 0 meaning non-upgradable like with priority on skills. interestingly npNum seems to be the amount of levels the NP has?
@@ -33,6 +42,10 @@ strengthstatus seems to increase from 1 to 99 when upgrading, with 0 meaning non
 ### Emiya/Space Ishtar Special Cases
 
 Alternate NPs appear to have priority set to 0. Their id is also servantId + 90 + n.
+
+### Melusine Special Cases
+
+She has two NPs with priority not set to 0 on either one. Unsure how to handle it yet.
 
 ### Vlad Berserker (aka NPs with multiple upgrades)
 

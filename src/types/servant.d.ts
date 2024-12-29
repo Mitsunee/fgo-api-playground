@@ -13,7 +13,7 @@ type ServantClass =
   | "moonCancer"
   | "pretender"
   | "foreigner"
-  | "beastEresh";
+  | "beast";
 
 interface Servant extends EntityBase {
   names: string[];

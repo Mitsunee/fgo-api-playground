@@ -3,6 +3,7 @@ import { connectorEN, connectorJP } from "./connector";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import { dirname } from "path";
 import { log } from "~/util/logger";
+import { EntityType } from "@atlasacademy/api-connector/dist/Schema/Entity";
 
 export async function getNiceServant(region: SupportedRegion, update = false) {
   const connector = region == "EN" ? connectorEN : connectorJP;
@@ -13,6 +14,12 @@ export async function getNiceServant(region: SupportedRegion, update = false) {
   if (update) {
     log.debug(`Fetching nice_servant for region ${region}`);
     niceServant = await connector.servantListNiceWithLore();
+    niceServant = niceServant.filter(
+      servant =>
+        servant.id != 2501500 || // filters out Aoko who becomes different servant after her NP
+        servant.type === EntityType.NORMAL ||
+        servant.type === EntityType.HEROINE
+    );
     await writeFile(filePath, JSON.stringify(niceServant), "utf8");
     log.info(`Updated nice_servant for region ${region}`);
   } else {
