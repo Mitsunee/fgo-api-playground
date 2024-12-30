@@ -59,9 +59,6 @@ async function main() {
     getNiceServant("EN", updateEN)
   ]);
 
-  // perform data update
-  await processApiData(niceServantJP, niceServantEN);
-
   if (!noUpdate) {
     // update local info
     log.debug(`Updating local cache info`);
@@ -72,6 +69,9 @@ async function main() {
       cacheVer: CACHE_VER
     });
   }
+
+  // perform data update
+  await processApiData(niceServantJP, niceServantEN);
 }
 
 main()
