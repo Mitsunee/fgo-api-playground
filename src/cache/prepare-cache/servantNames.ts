@@ -2,6 +2,8 @@ import type { ServantWithLore } from "@atlasacademy/api-connector/dist/Schema/Se
 import { convertClassName } from "./classNames";
 import { servantClassToString } from "~/util/servantClassToString";
 
+export type ServantNameIndex = ReturnType<typeof indexServantNames>;
+
 const filteredTokens = new Set([
   "Brave",
   "Saber",
@@ -143,9 +145,6 @@ export function indexServantNames(
   const niceServantMap: Record<ID, ServantWithLore> = {};
 
   for (const servantJP of niceServantJP) {
-    // TEMP: I still have super aoko in the data
-    if (servantJP.id == 2501500) continue;
-
     const servantEN = niceServantEN.find(servant => servant.id == servantJP.id);
     niceServantMap[servantJP.id] = servantEN || servantJP;
 
@@ -256,9 +255,6 @@ export function indexServantNames(
   const servantNames: Record<ID, { name: string; names: string[] }> = {};
   const reverseMap = new Map<string, number>();
   for (const { id } of niceServantJP) {
-    // TEMP: I still have super aoko in the data
-    if (id == 2501500) continue;
-
     const { name: nameTokenized, names: namesTokenized } =
       servantNamesTokenized[id];
 
