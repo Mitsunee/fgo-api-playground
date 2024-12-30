@@ -16,8 +16,7 @@ const { values: args } = parseArgs({
      */
     "force-check": { type: "boolean", short: "f", default: false },
     /**
-     * Reprocess data even if no updated data is available on either region,
-     * implies force-check is true
+     * Reprocess data without checking for updates
      */
     reprocess: { type: "boolean", short: "r", default: false }
   }
@@ -32,10 +31,23 @@ async function main() {
   const now = Date.now();
   const localInfo = await getCacheInfo();
 
+  // check whether we are reprocessing cached data only
+  if (args.reprocess) {
+    log.info("Skipping cache update check and reprocessing cached data");
+    const [niceServantJP, niceServantEN] = await Promise.all([
+      getNiceServant("JP", false),
+      getNiceServant("EN", false)
+    ]);
+
+    // perform data update
+    await processApiData(niceServantJP, niceServantEN);
+
+    return;
+  }
+
   // check whether we've updated within the past hour already
   const checkAfter = localInfo.lastChecked + 3_600_000;
-  const checkForced =
-    args["force-check"] || args.reprocess || CACHE_VER > localInfo.cacheVer;
+  const checkForced = args["force-check"] || CACHE_VER > localInfo.cacheVer;
   log.debug({ localInfo, now, checkAfter, checkForced });
   if (!checkForced && now < checkAfter) {
     log.info("Cache update check skipped. Use --force-check to check now");
@@ -47,7 +59,7 @@ async function main() {
   const updateJP = localInfo.JP < remoteInfo.JP;
   const updateEN = localInfo.EN < remoteInfo.EN;
   const noUpdate = !updateJP && !updateEN;
-  if (noUpdate && !args.reprocess) {
+  if (noUpdate) {
     log.info("Cache is up-to-date");
     return;
   }
