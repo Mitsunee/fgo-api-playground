@@ -16,9 +16,9 @@ export async function getNiceServant(region: SupportedRegion, update = false) {
     niceServant = await connector.servantListNiceWithLore();
     niceServant = niceServant.filter(
       servant =>
-        servant.id != 2501500 || // filters out Aoko who becomes different servant after her NP
-        servant.type === EntityType.NORMAL ||
-        servant.type === EntityType.HEROINE
+        servant.id != 2501500 && // filters out Aoko who becomes different servant after her NP
+        (servant.type === EntityType.NORMAL ||
+          servant.type === EntityType.HEROINE)
     );
     await writeFile(filePath, JSON.stringify(niceServant), "utf8");
     log.info(`Updated nice_servant for region ${region}`);
