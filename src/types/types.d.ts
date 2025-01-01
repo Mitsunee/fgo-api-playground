@@ -11,3 +11,24 @@ interface EntityBase {
    */
   en?: true;
 }
+
+interface EnhancementStage {
+  qp: number;
+  /**
+   * Array of Tuples containing item IDs with the amount needed
+   */
+  items: Array<[number, number]>;
+}
+
+interface SkillUpgrade {
+  /**
+   * Upgrade Level where 0 is non-upgradable skill, 1 is skill with no upgrade
+   */
+  upgradeLevel: number;
+  /**
+   * Maximum Upgrade Level where 0 is non-upgradable skill, 1 is skill with no
+   * upgrade
+   */
+  upgradeLevelMax: number;
+  en?: Omit<SkillUpgrade, "en">;
+}

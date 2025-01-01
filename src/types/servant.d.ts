@@ -22,12 +22,12 @@ interface Servant extends EntityBase {
   cost: number;
   className: ServantClass;
   gender: "male" | "female" | "unknown";
-  ascensionMaterials?: Array<UpgradeStage>;
+  ascensionMaterials: Array<EnhancementStage>;
   skills: Array<number>;
-  skillMaterials: Array<UpgradeStage>;
+  skillMaterials: Array<EnhancementStage>;
   appendSkills: Array<number>;
-  appendSkillMaterials: Array<UpgradeStage>;
+  appendSkillMaterials: Array<EnhancementStage>;
   passiveSkills: Array<number>;
-  noblePhantasms: Array<number>;
-  costumes: Array<Costume>;
+  noblePhantasms: Array<ServantNP>;
+  costumes: Array<ServantCostume>;
 }

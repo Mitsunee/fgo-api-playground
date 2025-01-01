@@ -1,4 +1,4 @@
-interface Costume extends EntityBase {
+interface ServantCostume extends EntityBase {
   owner: number;
-  unlock: UpgradeStage;
+  unlock: EnhancementStage;
 }
