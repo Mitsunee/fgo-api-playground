@@ -1,12 +1,12 @@
 import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
-import { indexServantNames } from "./servantNames";
-import { convertClassName } from "./classNames";
 import { log } from "~/util/logger";
+import { indexServantNames } from "./servantNames";
 import { createItemProcessor } from "./processItemData";
 import { createEnhancementProcessor } from "./processEnhancementStage";
 import { createSkillProcessor } from "./processServantSkill";
+import { createServantProcessor } from "./processServant";
 
-const knownSpecialcases = new Set([800100, 304800, 2300600]);
+const filteredSpecialcases = new Set([800100]);
 
 // WIP
 export async function processApiData(
@@ -18,13 +18,18 @@ export async function processApiData(
   const itemProcessor = createItemProcessor();
   const enhancementProcessor = createEnhancementProcessor(itemProcessor);
   const skillProcessor = createSkillProcessor();
+  const servantsProcessor = createServantProcessor({
+    servantNames,
+    enhancementProcessor,
+    skillProcessor
+  });
 
   // process servant list
   for (const servantJP of niceServantJP) {
     const id = servantJP.id;
 
-    // TEMP: special case testing
-    if (knownSpecialcases.has(id)) {
+    // TEMP: ignore unhandled special cases
+    if (filteredSpecialcases.has(id)) {
       log.warn(
         `Temporarily skipping ${servantNames[servantJP.id].name} as they need hardcoded special cases`
       );
@@ -32,26 +37,11 @@ export async function processApiData(
     }
 
     const servantEN = niceServantEN.find(servant => servant.id == id);
-    const enhancements = enhancementProcessor.convert(servantJP, servantEN);
-    const skillIds = skillProcessor.handleSkills(servantJP, servantEN);
-
-    const servant: Servant = {
-      id,
-      collectionNo: servantJP.collectionNo,
-      ...servantNames[id],
-      rarity: servantJP.rarity,
-      cost: servantJP.cost,
-      className: convertClassName(servantJP.className),
-      gender: servantJP.gender,
-      ...skillIds,
-      noblePhantasms: [], // TODO: NPs
-      ...enhancements
-    };
-
-    if (servantEN) servant.en = true;
-
-    servantsList.push(servant);
+    servantsProcessor.processServant(servantJP, servantEN);
   }
+
+  // sorting
+  servantsList.sort((a, b) => a.id - b.id);
 
   // TODO: actually write these to files instead of returning
   return {
