@@ -1,9 +1,18 @@
+import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import type {
   EntityLevelUpMaterialProgression,
   EntityLevelUpMaterials
 } from "@atlasacademy/api-connector/dist/Schema/Entity";
 import type { ItemProcessor } from "./processItemData";
 import { log } from "~/util/logger";
+
+type ServantEnhancements = Pick<
+  Servant,
+  "skillMaterials" | "ascensionMaterials" | "appendSkillMaterials" | "costumes"
+>;
+export type EnhancementProcessor = ReturnType<
+  typeof createEnhancementProcessor
+>;
 
 export function createEnhancementProcessor(itemProcessor: ItemProcessor) {
   const skippedItems = new Set<number>();
@@ -42,8 +51,52 @@ export function createEnhancementProcessor(itemProcessor: ItemProcessor) {
       .map(entry => convertEnhancementStage(entry[1], en));
   }
 
-  return {
-    stage: convertEnhancementStage,
-    stages: convertEnhancementStages
-  };
+  function convertServantCostume(
+    key: string,
+    servantJP: NiceServant,
+    servantEN?: NiceServant
+  ) {
+    const id = Number(key);
+    const en = Boolean(servantEN?.profile.costume[key]);
+    const materials = servantJP.costumeMaterials[key];
+    const costume: ServantCostume = {
+      id,
+      name:
+        servantEN?.profile.costume[key]?.name ||
+        servantJP.profile.costume[key].name,
+      owner: servantJP.id,
+      unlock: convertEnhancementStage(materials, en)
+    };
+    return costume;
+  }
+
+  function convertServantCostumes(
+    servantJP: NiceServant,
+    servantEN?: NiceServant
+  ) {
+    return Object.keys(servantJP.costumeMaterials).map(key =>
+      convertServantCostume(key, servantJP, servantEN)
+    );
+  }
+
+  function handleEnhancements(servantJP: NiceServant, servantEN?: NiceServant) {
+    const servant = servantEN || servantJP;
+    const en = Boolean(servantEN);
+    const enhancements: ServantEnhancements = {
+      skillMaterials: convertEnhancementStages(servant.skillMaterials, en),
+      ascensionMaterials: convertEnhancementStages(
+        servant.ascensionMaterials,
+        en
+      ),
+      appendSkillMaterials: convertEnhancementStages(
+        servant.appendSkillMaterials,
+        en
+      ),
+      costumes: convertServantCostumes(servantJP, servantEN)
+    };
+
+    return enhancements;
+  }
+
+  return { convert: handleEnhancements, getSkipped: () => skippedItems };
 }
