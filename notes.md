@@ -2,19 +2,16 @@
 
 ## TODO
 
-- Hardcode Mashu/Mashu(Ortinax) as separte Servants
-- Hardcode special cases for Melusine (Lancer)
+- Hardcode Mashu/Mashu(Ortinax) as separate Servants
+- Hardcode special cases for Melusine (Lancer)?
 
 ## Data Assumptions to prove
 
 - See Upgrade Levels below
-- NPs only have one owner
-- Costumes only have one owner
 - Mash needs to be hardcoded or ignored
   - possibly add Mashu (Ortinax) as a separate servant?
 - ServantIDs are divisible by 100
   - I noticed NPs seem to use servantId + n?
-- EoR spoilers have been purged from the API
 - IDs of Skills, Class Passives and Append Skills do not overlap
 
 ## Skills
@@ -37,23 +34,25 @@ Melusine's skills look like a skill upgrade with the above rules. Unsure how to 
 
 ## NPs
 
-strengthstatus seems to increase from 1 to 99 when upgrading, with 0 meaning non-upgradable like with priority on skills. interestingly npNum seems to be the amount of levels the NP has?
+strengthStatus seems to increase from 1 to 99 when upgrading, with 0 meaning non-upgradable like with priority on skills. interestingly npNum seems to be the amount of levels the NP has?
+
+A general rule can be used to filter out alternate NPs by only allowing priority above 0, and only one NP per strengthStatus. Servants with alternate NPs such as BB (Dubai) and Melusine would require a separate system to introduce alternate forms for servants, which is beyond the scope of this repository at this time. Such a system would also likely require manual matching of NP ids for each form.
 
 ### Emiya/Space Ishtar Special Cases
 
 Alternate NPs appear to have priority set to 0. Their id is also servantId + 90 + n.
 
-### Melusine Special Cases
+### Other alternate NPs (such as Melusine)
 
-She has two NPs with priority not set to 0 on either one. Unsure how to handle it yet.
+Sort NPs by id and only allow one per strengthStatus
 
 ### Vlad Berserker (aka NPs with multiple upgrades)
 
 The **weaker** version has strengthStatus 2 for some reason? This may mean I still just sort by priority or id then...
 
-### Epic of Remnant NPs
+### Epic of Remnant NPs (aka spoiler-censored ??? names)
 
-These seem to have disappeared from the atlas data?
+strengthStatus can be used to match these together, obviously the one with "???" as name should just be filtered disregarding other filters mentioned above.
 
 ## Items
 
