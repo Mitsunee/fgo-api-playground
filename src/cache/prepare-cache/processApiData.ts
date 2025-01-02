@@ -14,7 +14,6 @@ export async function processApiData(
   niceServantEN: NiceServant[]
 ) {
   const servantNames = indexServantNames(niceServantJP, niceServantEN);
-  const servantsList = new Array<Servant>();
   const itemProcessor = createItemProcessor();
   const enhancementProcessor = createEnhancementProcessor(itemProcessor);
   const skillProcessor = createSkillProcessor();
@@ -40,13 +39,10 @@ export async function processApiData(
     servantsProcessor.processServant(servantJP, servantEN);
   }
 
-  // sorting
-  servantsList.sort((a, b) => a.id - b.id);
-
   // TODO: actually write these to files instead of returning
   return {
     itemsList: itemProcessor.getItemList(),
-    servantsList,
+    servantsList: servantsProcessor.getServantsList(),
     skillsList: skillProcessor.getSkillList()
   };
 }
