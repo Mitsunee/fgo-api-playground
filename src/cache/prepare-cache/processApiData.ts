@@ -1,12 +1,11 @@
 import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
-import { log } from "~/util/logger";
 import { indexServantNames } from "./servantNames";
 import { createItemProcessor } from "./processItemData";
 import { createEnhancementProcessor } from "./processEnhancementStage";
 import { createSkillProcessor } from "./processServantSkill";
 import { createServantProcessor } from "./processServant";
-
-const filteredSpecialcases = new Set([800100]);
+import { processServantMashu } from "./processServantMashu";
+import { log } from "~/util/logger";
 
 // WIP
 export async function processApiData(
@@ -26,23 +25,27 @@ export async function processApiData(
   // process servant list
   for (const servantJP of niceServantJP) {
     const id = servantJP.id;
+    const servantEN = niceServantEN.find(servant => servant.id == id);
 
-    // TEMP: ignore unhandled special cases
-    if (filteredSpecialcases.has(id)) {
-      log.warn(
-        `Temporarily skipping ${servantNames[servantJP.id].name} as they need hardcoded special cases`
-      );
+    // Special case: Mash
+    if (id == 800100) {
+      if (!servantEN) throw new Error("Unexpected Eggplant Error");
+      processServantMashu(servantJP, servantEN, servantsProcessor);
       continue;
     }
+    if (id == 800150) {
+      throw new Error("Unexpected Eggplant id override");
+    }
 
-    const servantEN = niceServantEN.find(servant => servant.id == id);
     servantsProcessor.processServant(servantJP, servantEN);
   }
 
-  // TODO: actually write these to files instead of returning
-  return {
-    itemsList: itemProcessor.getItemList(),
-    servantsList: servantsProcessor.getServantsList(),
-    skillsList: skillProcessor.getSkillList()
-  };
+  // TODO: actually write these to files instead of just logging these out
+  const itemsList = itemProcessor.getItemList();
+  const servantsList = servantsProcessor.getServantsList();
+  const skillsList = skillProcessor.getSkillList();
+  // TODO: npList and costumeList just for logging purposes?
+  log.info(`${itemsList.length} Items found`);
+  log.info(`${servantsList.length} Servants found`);
+  log.info(`${skillsList.length} Skills found`);
 }
