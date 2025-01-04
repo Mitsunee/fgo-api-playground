@@ -47,17 +47,7 @@ async function main() {
   // create searcher
   const servantsList = await servantsCache.read();
   const searcher = new Searcher(servantsList, {
-    keySelector: candidate => {
-      const names = [candidate.name].concat(candidate.names);
-      if (names.some(name => name === undefined)) {
-        log.error(
-          `One of the names for servant ID ${candidate.id} is undefined`
-        );
-        log.info(`Servant Name: ${candidate.name}`);
-        log.info(`Servant Names: ${candidate.names.join(", ")}`);
-      }
-      return names;
-    },
+    keySelector: candidate => [candidate.name].concat(candidate.names),
     returnMatchData: true,
     threshold
   });
