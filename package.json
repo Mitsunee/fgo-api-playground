@@ -15,7 +15,8 @@
     "format:check": "prettier -c .",
     "lint": "eslint .",
     "lint:strict": "eslint --max-warnings 0 .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "prepare-cache": "tsc src/cache/prepare-cache/script.ts"
   },
   "nano-staged": {
     "**/*.{js,cjs,mjs,ts,mts,cts,json,md,yaml}": [
