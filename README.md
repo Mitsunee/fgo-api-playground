@@ -15,7 +15,13 @@ pnpm prepare-cache
 
 ## Scripts
 
-none yet :)
+### Servant Search
+
+```
+pnpm search-servant [-c,--collection] [-t,--threshold] ...queries
+```
+
+Script to easily search for Servants by name. The fuzzy search threshold is configurable with `-t`/`--threshold` (number from 0 to 1). To display collection number instead of id use `-c`/`--collection`.
 
 ## Cache
 

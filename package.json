@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "lint:strict": "eslint --max-warnings 0 .",
     "typecheck": "tsc",
-    "prepare-cache": "tsx src/cache/prepare-cache/script.ts"
+    "prepare-cache": "tsx src/cache/prepare-cache/script.ts",
+    "search-servant": "tsx src/search-servant/script.ts"
   },
   "nano-staged": {
     "**/*.{js,cjs,mjs,ts,mts,cts,json,md,yaml}": [
@@ -39,6 +40,7 @@
   "dependencies": {
     "@atlasacademy/api-connector": "^5.1.1",
     "@foxkit/logger": "^1.0.0",
+    "fast-fuzzy": "^1.12.0",
     "picocolors": "^1.1.1",
     "spacetime": "^7.7.0",
     "tsx": "^4.19.2"

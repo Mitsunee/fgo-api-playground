@@ -2,7 +2,7 @@ import { createLogger } from "@foxkit/logger";
 import { createColors } from "picocolors";
 import spacetime from "spacetime";
 
-const col = createColors(true);
+export const col = createColors(true);
 
 export function timer() {
   const start = spacetime.now();
