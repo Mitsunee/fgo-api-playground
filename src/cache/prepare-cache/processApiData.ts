@@ -33,7 +33,12 @@ export async function processApiData(
     // Special case: Mash
     if (id == 800100) {
       if (!servantEN) throw new Error("Unexpected Eggplant Error");
-      processServantMashu(servantJP, servantEN, servantsProcessor);
+      processServantMashu(
+        servantJP,
+        servantEN,
+        servantsProcessor,
+        servantNames
+      );
       continue;
     }
     if (id == 800150) {

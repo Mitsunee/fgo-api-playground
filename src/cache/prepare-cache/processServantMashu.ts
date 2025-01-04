@@ -1,6 +1,7 @@
 import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import type { ServantProcessor } from "./processServant";
 import { log } from "~/util/logger";
+import type { ServantNameIndex } from "./servantNames";
 
 // og
 const ogSkills = new Set([1000, 236000, 2000, 133000]);
@@ -15,7 +16,8 @@ const ortinaxCostumes = new Set(["800140", "800150"]);
 export function processServantMashu(
   mashJP: NiceServant,
   mashEN: NiceServant,
-  servantsProcessor: ServantProcessor
+  servantsProcessor: ServantProcessor,
+  servantNames: ServantNameIndex
 ) {
   // separate out into two different servants
   const ogJP: NiceServant = {
@@ -132,6 +134,9 @@ export function processServantMashu(
     }
     ogEN.costumeMaterials[key] = materials;
   }
+
+  // add Mash (Ortinax) to name index
+  servantNames[800150] = { name: "Mash Kyrielight (Ortinax)", names: [] };
 
   // process split servants
   servantsProcessor.processServant(ogJP, ogEN);
