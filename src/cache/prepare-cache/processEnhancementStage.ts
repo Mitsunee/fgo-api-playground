@@ -16,6 +16,11 @@ export type EnhancementProcessor = ReturnType<
 
 export function createEnhancementProcessor(itemProcessor: ItemProcessor) {
   const skippedItems = new Set<number>();
+  const costumesList = new Array<ServantCostume>();
+
+  function getCostumesList() {
+    return costumesList.toSorted((a, b) => a.id - b.id);
+  }
 
   function convertEnhancementStage(
     { items, qp }: EntityLevelUpMaterials,
@@ -67,6 +72,7 @@ export function createEnhancementProcessor(itemProcessor: ItemProcessor) {
       owner: servantJP.id,
       unlock: convertEnhancementStage(materials, en)
     };
+    costumesList.push(costume);
     return costume;
   }
 
@@ -98,5 +104,9 @@ export function createEnhancementProcessor(itemProcessor: ItemProcessor) {
     return enhancements;
   }
 
-  return { convert: handleEnhancements, getSkipped: () => skippedItems };
+  return {
+    convert: handleEnhancements,
+    getSkipped: () => skippedItems,
+    getCostumesList
+  };
 }

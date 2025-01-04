@@ -7,6 +7,7 @@ import { createEnhancementProcessor } from "./processEnhancementStage";
 import { createSkillProcessor } from "./processServantSkill";
 import { createServantProcessor } from "./processServant";
 import { processServantMashu } from "./processServantMashu";
+import { createNPsProcessor } from "./processNoblePhantasm";
 
 export async function processApiData(
   niceServantJP: NiceServant[],
@@ -16,10 +17,12 @@ export async function processApiData(
   const itemProcessor = createItemProcessor();
   const enhancementProcessor = createEnhancementProcessor(itemProcessor);
   const skillProcessor = createSkillProcessor();
+  const npsProcessor = createNPsProcessor();
   const servantsProcessor = createServantProcessor({
-    servantNames,
     enhancementProcessor,
-    skillProcessor
+    skillProcessor,
+    npsProcessor,
+    servantNames
   });
 
   // process servant list
@@ -43,10 +46,13 @@ export async function processApiData(
   const itemsList = itemProcessor.getItemList();
   const servantsList = servantsProcessor.getServantsList();
   const skillsList = skillProcessor.getSkillList();
-  // TODO: npList and costumeList just for logging purposes?
+  const npsList = npsProcessor.getNPsList();
+  const costumesList = enhancementProcessor.getCostumesList();
   log.info(`${itemsList.length} Items found`);
   log.info(`${servantsList.length} Servants found`);
   log.info(`${skillsList.length} Skills found`);
+  log.info(`${npsList.length} NPs found`);
+  log.info(`${costumesList.length} Costumes found`);
 
   await Promise.all([
     itemsCache.write(itemsList),

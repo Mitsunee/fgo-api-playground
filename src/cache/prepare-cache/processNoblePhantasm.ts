@@ -4,6 +4,7 @@ import type { Servant as NiceServant } from "@atlasacademy/api-connector/dist/Sc
 import { log } from "~/util/logger";
 
 type UpgradeLevels = Pick<SkillOwner, "upgradeLevel" | "upgradeLevelMax">;
+export type NPsProcessor = ReturnType<typeof createNPsProcessor>;
 
 const filterCache = new Map<NiceServant, NiceNP[]>();
 function filterServantNPs(servant: NiceServant) {
@@ -71,33 +72,44 @@ function convertCardType(card: Card): CardType {
   }
 }
 
-export function convertNoblePhantasms(
-  servantJP: NiceServant,
-  servantEN?: NiceServant
-) {
-  const npsJP = filterServantNPs(servantJP);
-  const npsEN = servantEN && filterServantNPs(servantEN);
-  const nps = new Array<ServantNP>();
+export function createNPsProcessor() {
+  const npsList = new Array<ServantNP>();
 
-  for (const npJP of npsJP) {
-    const npEN = npsEN?.find(np => np.id == npJP.id);
-    const levels = getUpgradeLevels(npJP, npsJP);
-
-    const np: ServantNP = {
-      id: npJP.id,
-      name: npEN?.name || npJP.name,
-      detail: npEN?.detail || npJP.detail || "",
-      card: convertCardType(npJP.card),
-      owner: servantJP.id,
-      ...levels
-    };
-
-    // levels en
-    const en = npsEN && npEN && getUpgradeLevels(npEN, npsEN);
-    if (en) np.en = en;
-
-    nps.push(np);
+  function getNPsList() {
+    return npsList.toSorted((a, b) => a.id - b.id);
   }
 
-  return nps;
+  function convertNoblePhantasms(
+    servantJP: NiceServant,
+    servantEN?: NiceServant
+  ) {
+    const npsJP = filterServantNPs(servantJP);
+    const npsEN = servantEN && filterServantNPs(servantEN);
+    const nps = new Array<ServantNP>();
+
+    for (const npJP of npsJP) {
+      const npEN = npsEN?.find(np => np.id == npJP.id);
+      const levels = getUpgradeLevels(npJP, npsJP);
+
+      const np: ServantNP = {
+        id: npJP.id,
+        name: npEN?.name || npJP.name,
+        detail: npEN?.detail || npJP.detail || "",
+        card: convertCardType(npJP.card),
+        owner: servantJP.id,
+        ...levels
+      };
+
+      // levels en
+      const en = npsEN && npEN && getUpgradeLevels(npEN, npsEN);
+      if (en) np.en = en;
+
+      nps.push(np);
+      npsList.push(np);
+    }
+
+    return nps;
+  }
+
+  return { convert: convertNoblePhantasms, getNPsList };
 }
