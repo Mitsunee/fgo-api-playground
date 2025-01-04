@@ -1,13 +1,13 @@
 import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
+import { log } from "~/util/logger";
+import { itemsCache, servantsCache, skillsCache } from "~/cache";
 import { indexServantNames } from "./servantNames";
 import { createItemProcessor } from "./processItemData";
 import { createEnhancementProcessor } from "./processEnhancementStage";
 import { createSkillProcessor } from "./processServantSkill";
 import { createServantProcessor } from "./processServant";
 import { processServantMashu } from "./processServantMashu";
-import { log } from "~/util/logger";
 
-// WIP
 export async function processApiData(
   niceServantJP: NiceServant[],
   niceServantEN: NiceServant[]
@@ -40,7 +40,6 @@ export async function processApiData(
     servantsProcessor.processServant(servantJP, servantEN);
   }
 
-  // TODO: actually write these to files instead of just logging these out
   const itemsList = itemProcessor.getItemList();
   const servantsList = servantsProcessor.getServantsList();
   const skillsList = skillProcessor.getSkillList();
@@ -48,4 +47,12 @@ export async function processApiData(
   log.info(`${itemsList.length} Items found`);
   log.info(`${servantsList.length} Servants found`);
   log.info(`${skillsList.length} Skills found`);
+
+  await Promise.all([
+    itemsCache.write(itemsList),
+    servantsCache.write(servantsList),
+    skillsCache.write(skillsList)
+  ]);
+
+  log.success("Wrote new data cache");
 }
