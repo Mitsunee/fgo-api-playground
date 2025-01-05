@@ -11,9 +11,12 @@ const args = parseArgs({
   options: {
     verbose: { type: "boolean", short: "v", default: false },
     threshold: { type: "string", short: "t", default: "0.7" },
-    collection: { type: "boolean", short: "c", default: false }
+    collection: { type: "boolean", short: "c", default: false },
+    original: { type: "boolean", default: true },
+    alt: { type: "boolean", default: true }
   },
-  allowPositionals: true
+  allowPositionals: true,
+  allowNegative: true
 });
 
 function prettyPrintMatch(match: MatchData<unknown>) {
@@ -24,7 +27,7 @@ function prettyPrintMatch(match: MatchData<unknown>) {
   const matched = text.slice(index, end);
   const after = text.substring(end);
 
-  return `${before}${col.bold(matched)}${after}`;
+  return `${before}${col.bold(col.redBright(matched))}${after}`;
 }
 
 async function main() {
@@ -48,7 +51,10 @@ async function main() {
   // create searcher
   const servantsList = await servantsCache.read();
   const searcher = new Searcher(servantsList, {
-    keySelector: candidate => [candidate.name].concat(candidate.names),
+    keySelector: candidate =>
+      args.values.alt
+        ? [candidate.name].concat(candidate.names)
+        : [candidate.name],
     returnMatchData: true,
     threshold
   });
@@ -69,7 +75,11 @@ async function main() {
         showCollectionNo: args.values.collection,
         overrideName: pretty
       });
-      console.log(`  - ${describedName}`);
+      const origName =
+        !args.values.original || result.item.name == result.original
+          ? ""
+          : ` (original name: ${result.item.name})`;
+      console.log(`  - ${describedName}${origName}`);
     }
 
     console.log(""); // empty line

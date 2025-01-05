@@ -21,7 +21,12 @@ pnpm prepare-cache
 pnpm search-servant [-c,--collection] [-t,--threshold] ...queries
 ```
 
-Script to easily search for Servants by name. The fuzzy search threshold is configurable with `-t`/`--threshold` (number from 0 to 1). To display collection number instead of id use `-c`/`--collection`.
+Script to easily search for Servants by name.
+
+- `-t`/`--threshold`: fuzzy search threshold (number from 0 to 1)
+- `-c`/`--collection`: display collection number instead of id
+- `--no-original`: hide the original name for search results of alternative names
+- `--no-alt`: do not consider alternative names in searches
 
 ### Future Welfare Servant Search
 
