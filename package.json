@@ -3,12 +3,11 @@
   "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "author": "YOUR_NAME_HERE",
+  "author": "Mitsunee",
   "repository": "mitsunee/fgo-api-playground",
   "license": "MIT",
   "private": true,
   "type": "module",
-  "main": "src/index.ts",
   "scripts": {
     "prepare": "simple-git-hooks",
     "format": "prettier -w .",
