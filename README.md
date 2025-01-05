@@ -23,6 +23,14 @@ pnpm search-servant [-c,--collection] [-t,--threshold] ...queries
 
 Script to easily search for Servants by name. The fuzzy search threshold is configurable with `-t`/`--threshold` (number from 0 to 1). To display collection number instead of id use `-c`/`--collection`.
 
+### Future Welfare Servant Search
+
+```
+pnpm tsx src/welfares/script.ts
+```
+
+Script that lists event welfare Servants that have not yet been released on the EN server.
+
 ## Cache
 
 Instead of constantly redownloading the same data the `pnpm prepare-cache` script downloads all needed data for servants and items at once and stores it in `./data/cache`. Data is transformed to match the data structures descriped in [`./src/types`](./src/types), which avoids duplicates and removes attributes that are not used in any scripts.
