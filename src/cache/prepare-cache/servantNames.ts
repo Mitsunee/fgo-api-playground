@@ -1,25 +1,19 @@
 import type { ServantWithLore } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import { convertClassName } from "./classNames";
 import { servantClassToString } from "~/util/servantClassToString";
+import {
+  filterClassNameTokens,
+  joinTokenizedName,
+  tokenizeServantName
+} from "~/util/tokenizeServantName";
 
 export type ServantNameIndex = ReturnType<typeof indexServantNames>;
 
 const filteredTokens = new Set([
   "Brave",
-  "Saber",
-  "Archer",
-  "Lancer",
-  "Rider",
   "Summer Vacation",
-  "Caster",
-  "Assassin",
-  "Berserker",
-  "Ruler",
-  "Avenger",
-  "Moon Cancer",
   "Cinderella",
-  "Halloween",
-  "Beast"
+  "Halloween"
 ]);
 
 const addedNames = new Map([
@@ -69,49 +63,8 @@ const replacedNames = new Map([
 ]);
 
 function tokenizeName(name: string) {
-  const tokens = new Array<string>();
-  let token = "";
-  let parens = false;
-
-  for (let i = 0; i < name.length; i++) {
-    const char = name[i];
-    if (parens && char == ")") {
-      token = token.trim();
-      if (token.length > 0) tokens.push(token);
-      token = "";
-      parens = false;
-      continue;
-    }
-
-    // start of new token with parens
-    if (!parens && char == "(" && name[i - 1] == " ") {
-      token = token.trim();
-      if (token.length > 0) tokens.push(token);
-      token = "";
-      parens = true;
-      continue;
-    }
-
-    token += char;
-  }
-
-  // process final token
-  token = token.trim();
-  if (token.length > 0) tokens.push(token);
-
-  // fix tokens missing parens
-  let match: RegExpMatchArray | null;
-  while ((match = tokens[0].match(/ (Alter|Lily|Santa|Dubai)$/))) {
-    tokens.splice(1, 0, match[1]);
-    tokens[0] = tokens[0].slice(0, -1 * match[1].length).trimEnd();
-  }
-
-  return tokens.filter((token, idx) => idx === 0 || !filteredTokens.has(token));
-}
-
-function joinTokenizedName(tokens: string[]) {
-  const [root, ...suffixes] = tokens;
-  return `${root}${suffixes.map(suffix => ` (${suffix})`).join("")}`;
+  const tokens = tokenizeServantName(name);
+  return filterClassNameTokens(tokens, filteredTokens);
 }
 
 function getAdditionalServantNames(servant: ServantWithLore) {
