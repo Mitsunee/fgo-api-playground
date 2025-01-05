@@ -1,18 +1,32 @@
 import type { ServantWithLore } from "@atlasacademy/api-connector/dist/Schema/Servant";
-import { connectorEN, connectorJP } from "./connector";
-import { mkdir, readFile, writeFile } from "fs/promises";
-import { dirname } from "path";
-import { log } from "~/util/logger";
 import { EntityType } from "@atlasacademy/api-connector/dist/Schema/Entity";
+import { log } from "~/util/logger";
+import { CacheFile } from "..";
+import { connectorEN, connectorJP } from "./connector";
+
+const cacheFiles = new Map<SupportedRegion, CacheFile<ServantWithLore[]>>();
 
 export async function getNiceServant(region: SupportedRegion, update = false) {
   const connector = region == "EN" ? connectorEN : connectorJP;
-  const filePath = `data/cache/${region}/nice_servant.json`;
-  await mkdir(dirname(filePath), { recursive: true });
-
+  const descriptor = `nice_servant for region ${region}`;
   let niceServant: ServantWithLore[];
+  let cacheFile = cacheFiles.get(region);
+  if (!cacheFile) {
+    const filePath = `data/cache/${region}/nice_servant.json`;
+    cacheFile = new CacheFile(filePath);
+    cacheFiles.set(region, cacheFile);
+  }
+
+  if (!update) {
+    const exists = await cacheFile.exists();
+    if (!exists) {
+      log.warn(`${descriptor} does not yet exist, forcing update`);
+      update = true;
+    }
+  }
+
   if (update) {
-    log.debug(`Fetching nice_servant for region ${region}`);
+    log.debug(`Fetching ${descriptor}`);
     niceServant = await connector.servantListNiceWithLore();
     niceServant = niceServant.filter(
       servant =>
@@ -20,19 +34,17 @@ export async function getNiceServant(region: SupportedRegion, update = false) {
         (servant.type === EntityType.NORMAL ||
           servant.type === EntityType.HEROINE)
     );
-    await writeFile(filePath, JSON.stringify(niceServant), "utf8");
-    log.info(`Updated nice_servant for region ${region}`);
+    await cacheFile.write(niceServant);
+    log.info(`Updated ${descriptor}`);
   } else {
     try {
-      const file = await readFile(filePath, "utf8");
-      const data = JSON.parse(file);
+      const data = await cacheFile.read();
       if (!Array.isArray(data)) throw new Error("");
       niceServant = data;
-      log.debug(`Using cached nice_servant for region ${region}`);
-    } catch {
-      throw new Error(
-        `Could not retrieve nice_servant.json for region ${region}`
-      );
+      log.debug(`Using cached ${descriptor}`);
+    } catch (e) {
+      log.error(`Could not retrieve ${descriptor}`);
+      throw e;
     }
   }
 

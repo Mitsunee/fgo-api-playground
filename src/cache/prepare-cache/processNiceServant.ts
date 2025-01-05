@@ -9,7 +9,7 @@ import { createServantProcessor } from "./processServant";
 import { processServantMashu } from "./processServantMashu";
 import { createNPsProcessor } from "./processNoblePhantasm";
 
-export async function processApiData(
+export async function processNiceServant(
   niceServantJP: NiceServant[],
   niceServantEN: NiceServant[]
 ) {

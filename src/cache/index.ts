@@ -1,15 +1,19 @@
-import { readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, stat, writeFile } from "fs/promises";
+import { dirname } from "path";
 
 export class CacheFile<T> {
   path: string;
+  dir: string;
   cache?: T;
 
   constructor(path: string) {
     this.path = path;
+    this.dir = dirname(path);
   }
 
-  write(data: T) {
+  async write(data: T) {
     this.cache = data;
+    await mkdir(this.dir, { recursive: true });
     return writeFile(this.path, JSON.stringify(data), "utf-8");
   }
 
@@ -19,6 +23,15 @@ export class CacheFile<T> {
     const data = JSON.parse(file) as T;
     this.cache = data;
     return data;
+  }
+
+  async exists() {
+    try {
+      await stat(this.path);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 

@@ -4,7 +4,7 @@ import { getCacheInfo, writeCacheInfo } from "../getCacheInfo";
 import { CACHE_VER } from "../types";
 import { getRemoteCacheInfo } from "./getRemoteCacheInfo";
 import { getNiceServant } from "./getNiceServant";
-import { processApiData } from "./processApiData";
+import { processNiceServant } from "./processNiceServant";
 
 const getTime = timer();
 const { values: args } = parseArgs({
@@ -40,7 +40,7 @@ async function main() {
     ]);
 
     // perform data update
-    await processApiData(niceServantJP, niceServantEN);
+    await processNiceServant(niceServantJP, niceServantEN);
 
     return;
   }
@@ -83,7 +83,7 @@ async function main() {
   }
 
   // perform data update
-  await processApiData(niceServantJP, niceServantEN);
+  await processNiceServant(niceServantJP, niceServantEN);
 }
 
 main()
