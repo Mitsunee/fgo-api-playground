@@ -64,6 +64,4 @@ export async function processNiceServant(
     servantsCache.write(servantsList),
     skillsCache.write(skillsList)
   ]);
-
-  log.success("Wrote new data cache");
 }

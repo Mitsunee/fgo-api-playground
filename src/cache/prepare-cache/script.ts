@@ -5,6 +5,8 @@ import { CACHE_VER } from "../types";
 import { getRemoteCacheInfo } from "./getRemoteCacheInfo";
 import { getNiceServant } from "./getNiceServant";
 import { processNiceServant } from "./processNiceServant";
+import { getNiceWar } from "./getNiceWar";
+import { processNiceWar } from "./processNiceWar";
 
 const getTime = timer();
 const { values: args } = parseArgs({
@@ -35,12 +37,20 @@ async function main() {
   if (args.reprocess) {
     log.info("Skipping cache update check and reprocessing cached data");
     const [niceServantJP, niceServantEN] = await Promise.all([
-      getNiceServant("JP", false),
-      getNiceServant("EN", false)
+      getNiceServant("JP"),
+      getNiceServant("EN")
+    ]);
+    const [niceWarJP, niceWarEN] = await Promise.all([
+      getNiceWar("JP"),
+      getNiceWar("EN")
     ]);
 
     // perform data update
-    await processNiceServant(niceServantJP, niceServantEN);
+    await Promise.all([
+      processNiceServant(niceServantJP, niceServantEN),
+      processNiceWar(niceWarJP, niceWarEN)
+    ]);
+    log.success("Wrote new data cache");
 
     return;
   }
@@ -70,6 +80,10 @@ async function main() {
     getNiceServant("JP", updateJP),
     getNiceServant("EN", updateEN)
   ]);
+  const [niceWarJP, niceWarEN] = await Promise.all([
+    getNiceWar("JP", updateJP),
+    getNiceWar("EN", updateEN)
+  ]);
 
   if (!noUpdate) {
     // update local info
@@ -83,7 +97,11 @@ async function main() {
   }
 
   // perform data update
-  await processNiceServant(niceServantJP, niceServantEN);
+  await Promise.all([
+    processNiceServant(niceServantJP, niceServantEN),
+    processNiceWar(niceWarJP, niceWarEN, updateJP, updateEN)
+  ]);
+  log.success("Wrote new data cache");
 }
 
 main()

@@ -40,3 +40,6 @@ export const itemsCache = new CacheFile<Item[]>("data/itemsList.json");
 export const skillsCache = new CacheFile<ServantSkill[]>(
   "data/skillsList.json"
 );
+export const freeQuestsCache = new CacheFile<FreeQuest[]>(
+  "data/freeQuestsList.json"
+);
