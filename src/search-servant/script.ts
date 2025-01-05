@@ -2,6 +2,7 @@ import type { MatchData } from "fast-fuzzy";
 import { Searcher } from "fast-fuzzy";
 import { parseArgs } from "util";
 import { servantsCache } from "~/cache";
+import { describeServant } from "~/util/describeServant";
 import { col, log, logger, timer } from "~/util/logger";
 
 const getTime = timer();
@@ -63,10 +64,12 @@ async function main() {
 
     for (const result of results) {
       const pretty = prettyPrintMatch(result);
-      const num = args.values.collection
-        ? result.item.collectionNo
-        : result.item.id;
-      console.log(`  - [${num}] ${pretty}`);
+      const describedName = describeServant(result.item, {
+        showId: !args.values.collection,
+        showCollectionNo: args.values.collection,
+        overrideName: pretty
+      });
+      console.log(`  - ${describedName}`);
     }
 
     console.log(""); // empty line

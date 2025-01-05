@@ -1,6 +1,6 @@
 import type { ServantWithLore } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import { convertClassName } from "./classNames";
-import { servantClassToString } from "~/util/servantClassToString";
+import { describeServantClass } from "~/util/describeServantClass";
 import {
   filterClassNameTokens,
   joinTokenizedName,
@@ -173,7 +173,7 @@ export function indexServantNames(
 
     // append class name to all names
     for (const id of servantIDs) {
-      const className = servantClassToString(
+      const className = describeServantClass(
         convertClassName(niceServantMap[id].className)
       );
       const pointer = namePointers[id];

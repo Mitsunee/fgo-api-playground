@@ -1,4 +1,10 @@
-export function servantClassToString(name: ServantClass): string {
+/**
+ * Turns ServantClass property into nice human-readable string (i.e. capitalized,
+ * and spaces inserted where needed)
+ * @param name ServantClass property
+ * @returns ServantClass as string
+ */
+export function describeServantClass(name: ServantClass): string {
   switch (name) {
     case "saber":
     case "archer":
