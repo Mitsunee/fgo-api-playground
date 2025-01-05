@@ -1,8 +1,8 @@
 import type { War as NiceWar } from "@atlasacademy/api-connector/dist/Schema/War";
 import { WarFlag } from "@atlasacademy/api-connector/dist/Schema/War";
-import { getBasicQuestPhase } from "./getBasicQuestPhase";
 import { log } from "~/util/logger";
-import { freeQuestsCache } from "..";
+import { freeQuestsCache, warsCache } from "..";
+import { getBasicQuestPhase } from "./getBasicQuestPhase";
 
 // WIP
 export async function processNiceWar(
@@ -11,12 +11,12 @@ export async function processNiceWar(
   updateJP = false,
   updateEN = false
 ) {
-  // TODO: also keep a warsList so quests can map to that
-  // TODO: I forgot AP cost, which is part of the entire point of this lol
   const freeQuestList = new Array<FreeQuest>();
+  const warsList = new Array<War>();
 
   for (const warJP of niceWarJP) {
     const warEN = niceWarEN.find(war => war.id == warJP.id);
+    const questIds = Array<number>();
 
     // skip non-main-scenario wars and ordeal call
     if (!warJP.flags.includes(WarFlag.MAIN_SCENARIO) || warJP.id == 401) {
@@ -47,17 +47,36 @@ export async function processNiceWar(
         const freeQuest: FreeQuest = {
           id: questJP.id,
           name: questEN?.name || questJP.name,
-          war: warEN && region == "EN" ? warEN.name : warJP.name,
+          war: warJP.id,
+          apCost: phase.consume,
           bond: phase.bond
         };
 
         if (questEN) freeQuest.en = true;
 
         freeQuestList.push(freeQuest);
+        questIds.push(questJP.id);
       }
     }
+
+    if (questIds.length < 1) continue;
+
+    const war: War = {
+      id: warJP.id,
+      name: warEN?.name || warJP.name,
+      longName: warEN?.longName || warJP.longName,
+      quests: questIds
+    };
+
+    if (warEN) war.en = true;
+
+    warsList.push(war);
   }
 
   log.info(`${freeQuestList.length} Free Quests found`);
-  await freeQuestsCache.write(freeQuestList);
+  log.info(`${warsList.length} Wars found (with quests saved)`);
+  await Promise.all([
+    freeQuestsCache.write(freeQuestList),
+    warsCache.write(warsList)
+  ]);
 }

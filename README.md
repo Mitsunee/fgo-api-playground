@@ -42,15 +42,23 @@ Instead of constantly redownloading the same data the `pnpm prepare-cache` scrip
 
 ```
 data
+├── freeQuestList.json (transformed free quest data)
 ├── itemsList.json (transformed item data)
 ├── servantsList.json (transformed servant data)
 ├── skillsList.json (transformed skill data)
+├── warsList.json (transformed war data)
 └── cache
    ├── info.json (information cache export age and last check date)
    ├── EN
-   |  └── nice_servant.json (niceServant (with lore) export)
+   |  ├── nice_servant.json (niceServant (with lore) export)
+   |  ├── nice_war.json (niceWar export)
+   |  └── questPhase
+   |      └── {id}_{phase}.json (basic quest phase cache)
    └── JP
-      └── nice_servant.json (niceServant (with lore) export)
+      ├── nice_servant.json (niceServant (with lore) export)
+      ├── nice_war.json (niceWar export)
+      └── questPhase
+          └── {id}_{phase}.json (basic quest phase cache)
 ```
 
 Data should always be retrieved with the provided utilities in [`./src/cache`](./src/cache/index.ts)
