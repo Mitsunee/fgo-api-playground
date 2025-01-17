@@ -1,4 +1,5 @@
 import type { Item as NiceItem } from "@atlasacademy/api-connector/dist/Schema/Item";
+
 export type ItemProcessor = ReturnType<typeof createItemProcessor>;
 
 function convertItemRarity(item: NiceItem): Item["rarity"] {
