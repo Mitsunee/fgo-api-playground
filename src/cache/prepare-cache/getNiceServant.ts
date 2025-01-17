@@ -1,6 +1,6 @@
 import type { ServantWithLore } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import { EntityType } from "@atlasacademy/api-connector/dist/Schema/Entity";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { CacheFile } from "..";
 import { connectorEN, connectorJP } from "./connector";
 

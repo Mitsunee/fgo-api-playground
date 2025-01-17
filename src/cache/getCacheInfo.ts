@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import type { CacheInfo } from "./types";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { dirname } from "path";
 
 const infoPath = "data/cache/info.json";

@@ -4,7 +4,7 @@ import type {
   EntityLevelUpMaterials
 } from "@atlasacademy/api-connector/dist/Schema/Entity";
 import type { ItemProcessor } from "./processItemData";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 
 type ServantEnhancements = Pick<
   Servant,

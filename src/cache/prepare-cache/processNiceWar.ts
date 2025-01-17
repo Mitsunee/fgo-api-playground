@@ -1,6 +1,6 @@
 import type { War as NiceWar } from "@atlasacademy/api-connector/dist/Schema/War";
 import { WarFlag } from "@atlasacademy/api-connector/dist/Schema/War";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { freeQuestsCache, warsCache } from "..";
 import { getBasicQuestPhase } from "./getBasicQuestPhase";
 

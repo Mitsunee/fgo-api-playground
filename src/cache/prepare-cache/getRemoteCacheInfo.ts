@@ -1,4 +1,4 @@
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { connectorEN, connectorJP } from "./connector";
 
 export async function getRemoteCacheInfo() {

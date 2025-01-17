@@ -1,5 +1,5 @@
 import { parseArgs } from "util";
-import { log, logger, timer } from "~/util/logger";
+import { log, logger, timer } from "~/utils/logger";
 import { getCacheInfo, writeCacheInfo } from "../getCacheInfo";
 import { CACHE_VER } from "../types";
 import { getRemoteCacheInfo } from "./getRemoteCacheInfo";

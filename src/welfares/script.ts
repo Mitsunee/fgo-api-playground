@@ -1,9 +1,9 @@
 import { parseArgs } from "util";
 import { servantsCache } from "~/cache";
 import { getNiceServant } from "~/cache/prepare-cache/getNiceServant";
-import { describeServant } from "~/util/describeServant";
-import { listToMap } from "~/util/listToMap";
-import { log, logger, timer } from "~/util/logger";
+import { describeServant } from "~/utils/describeServant";
+import { listToMap } from "~/utils/listToMap";
+import { log, logger, timer } from "~/utils/logger";
 
 const getTime = timer();
 const { values: args } = parseArgs({

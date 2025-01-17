@@ -2,8 +2,8 @@ import type { MatchData } from "fast-fuzzy";
 import { Searcher } from "fast-fuzzy";
 import { parseArgs } from "util";
 import { servantsCache } from "~/cache";
-import { describeServant } from "~/util/describeServant";
-import { col, log, logger, timer } from "~/util/logger";
+import { describeServant } from "~/utils/describeServant";
+import { col, log, logger, timer } from "~/utils/logger";
 
 const getTime = timer();
 const args = parseArgs({

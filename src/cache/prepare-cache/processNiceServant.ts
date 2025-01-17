@@ -1,5 +1,5 @@
 import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { itemsCache, servantsCache, skillsCache } from "~/cache";
 import { indexServantNames } from "./servantNames";
 import { createItemProcessor } from "./processItemData";

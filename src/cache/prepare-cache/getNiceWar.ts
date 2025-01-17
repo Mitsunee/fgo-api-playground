@@ -1,5 +1,5 @@
 import type { War as NiceWar } from "@atlasacademy/api-connector/dist/Schema/War";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { CacheFile } from "..";
 import { connectorEN, connectorJP } from "./connector";
 

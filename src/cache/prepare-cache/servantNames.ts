@@ -1,11 +1,11 @@
 import type { ServantWithLore } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import { convertClassName } from "./classNames";
-import { describeServantClass } from "~/util/describeServantClass";
+import { describeServantClass } from "~/utils/describeServantClass";
 import {
   filterClassNameTokens,
   joinTokenizedName,
   tokenizeServantName
-} from "~/util/tokenizeServantName";
+} from "~/utils/tokenizeServantName";
 
 export type ServantNameIndex = ReturnType<typeof indexServantNames>;
 

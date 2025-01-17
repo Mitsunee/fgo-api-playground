@@ -1,6 +1,6 @@
 import type { ServantWithLore as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
 import type { ServantProcessor } from "./processServant";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import type { ServantNameIndex } from "./servantNames";
 
 // og

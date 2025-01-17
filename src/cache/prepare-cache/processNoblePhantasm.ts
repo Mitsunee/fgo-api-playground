@@ -1,7 +1,7 @@
 import { Card } from "@atlasacademy/api-connector";
 import type { NoblePhantasm as NiceNP } from "@atlasacademy/api-connector/dist/Schema/NoblePhantasm";
 import type { Servant as NiceServant } from "@atlasacademy/api-connector/dist/Schema/Servant";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 
 type UpgradeLevels = Pick<SkillOwner, "upgradeLevel" | "upgradeLevelMax">;
 export type NPsProcessor = ReturnType<typeof createNPsProcessor>;

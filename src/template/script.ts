@@ -1,5 +1,5 @@
 import { parseArgs } from "util";
-import { log, logger, timer } from "~/util/logger";
+import { log, logger, timer } from "~/utils/logger";
 
 const getTime = timer();
 const { values: args } = parseArgs({

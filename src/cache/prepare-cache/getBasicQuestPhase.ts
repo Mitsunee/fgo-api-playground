@@ -1,8 +1,8 @@
 import type { QuestPhaseBasic } from "@atlasacademy/api-connector/dist/Schema/Quest";
-import { log } from "~/util/logger";
+import { log } from "~/utils/logger";
 import { CacheFile } from "..";
 import { connectorEN, connectorJP } from "./connector";
-import { sleep } from "~/util/sleep";
+import { sleep } from "~/utils/sleep";
 
 type FileKey = `${number}_${number}`;
 type CacheKey = `${SupportedRegion}:${FileKey}`;
