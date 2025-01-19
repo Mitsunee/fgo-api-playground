@@ -16,7 +16,8 @@
     "lint:strict": "eslint --max-warnings 0 .",
     "typecheck": "tsc",
     "prepare-cache": "tsx src/cache/prepare-cache/script.ts",
-    "search-servant": "tsx src/search-servant/script.ts"
+    "search-servant": "tsx src/search-servant/script.ts",
+    "ap-calc": "tsx src/ap-calc/script.ts"
   },
   "nano-staged": {
     "**/*.{js,cjs,mjs,ts,mts,cts,json,md,yaml}": [

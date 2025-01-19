@@ -36,6 +36,14 @@ pnpm tsx src/welfares/script.ts
 
 Script that lists event welfare Servants that have not yet been released on the EN server.
 
+### AP Calc
+
+```
+pnpm ap-calc [-m,--max <num>] [-n,--node <num>] <current-ap> [<current-timer>]
+```
+
+Simple AP Calculator that calculates time to Max AP and, if given a node cost via `-n` (or `--node`) time until each possible run can be done. Output is given as a table with time (24h notation) and delta until that point. Max AP is assumed to be `144`, but can be overriden with `-m` (or `--max`). Values for current ap and time until next AP are positional, with current timer being optional.
+
 ## Cache
 
 Instead of constantly redownloading the same data the `pnpm prepare-cache` script downloads all needed data for servants and items at once and stores it in `./data/cache`. Data is transformed to match the data structures descriped in [`./src/types`](./src/types), which avoids duplicates and removes attributes that are not used in any scripts.
