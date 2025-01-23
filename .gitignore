@@ -10,3 +10,5 @@ node_modules/
 .env.local
 dist/
 data/
+src/temp.ts
+
