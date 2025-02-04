@@ -61,7 +61,7 @@ async function main() {
   const timerValue = args.positionals[1] || "";
   let timerSeconds = 300;
   if (timerValue) {
-    const match = timerValue.match(/^([0-4]):([0-5][0-9])$/);
+    const match = timerValue.match(/^([0-4]):?([0-5][0-9])$/);
     if (!match) {
       throw new Error(`Could not parse value for current timer: ${timerValue}`);
     }
