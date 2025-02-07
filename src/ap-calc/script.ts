@@ -44,7 +44,7 @@ async function main() {
     log.warn("Using '5' as fallback value for --max");
     apMax = 144;
   }
-  if (nodeCost && isNaN(nodeCost) && nodeCost < 1) {
+  if (typeof nodeCost == "number" && (isNaN(nodeCost) || nodeCost < 1)) {
     log.error(
       `Could not parse argument for --node '${args.values.node}'. Argument must integer > 0`
     );
