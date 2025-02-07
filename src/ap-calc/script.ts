@@ -8,6 +8,7 @@ const args = parseArgs({
   options: {
     verbose: { type: "boolean", short: "v", default: false },
     max: { type: "string", short: "m", default: "144" },
+    target: { type: "string", short: "t" },
     node: { type: "string", short: "n" }
   },
   allowPositionals: true
@@ -37,6 +38,8 @@ async function main() {
   // parse args
   let apMax = parseInt(args.values.max);
   let nodeCost = args.values.node ? parseInt(args.values.node) : undefined;
+  let targetAP = args.values.target ? parseInt(args.values.target) : undefined;
+
   if (isNaN(apMax) || apMax < 20) {
     log.error(
       `Could not parse argument for --max '${args.values.max}'. Argument must integer >= 20`
@@ -49,6 +52,12 @@ async function main() {
       `Could not parse argument for --node '${args.values.node}'. Argument must integer > 0`
     );
     nodeCost = undefined;
+  }
+  if (typeof targetAP == "number" && (isNaN(targetAP) || targetAP < 1)) {
+    log.error(
+      `Could not parse argument for --target '${args.values.target}'. Argument must be integer > 0`
+    );
+    targetAP = undefined;
   }
 
   // parse positionals
@@ -88,6 +97,17 @@ async function main() {
     }
   }
 
+  if (targetAP) {
+    const deltaTargetAP = targetAP - apCurr;
+    const deltaTargetSeconds = (deltaTargetAP - 1) * 300 + timerSeconds;
+    table.push(
+      Object.assign(
+        { ap: targetAP, title: "Target" },
+        timeDiffer(deltaTargetSeconds)
+      )
+    );
+  }
+
   // handle max AP
   const deltaMaxAP = apMax - apCurr;
   const deltaMaxSeconds = (deltaMaxAP - 1) * 300 + timerSeconds;
@@ -99,6 +119,7 @@ async function main() {
   console.table(
     table
       .filter(run => run.ap >= apCurr)
+      .sort((a, b) => a.ap - b.ap)
       .reduce(
         (obj, { title, ...row }) => {
           obj[title] = row;
