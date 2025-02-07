@@ -13,7 +13,7 @@ const args = parseArgs({
   },
   allowPositionals: true
 });
-const usageText = `USAGE: pnpm ap-calc [--max <num>] [--node <num>] <current-ap> [<current-timer>]`;
+const usageText = `USAGE: pnpm ap-calc [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
 
 const timeDiffer = (() => {
   const now = spacetime.now().startOf("second");
