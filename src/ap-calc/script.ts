@@ -1,6 +1,7 @@
 import spacetime from "spacetime";
 import { parseArgs } from "util";
 import { log, logger, createTimer } from "~/utils/logger";
+import { parseNumericArg } from "~/utils/parseNumericArg";
 
 const timer = createTimer();
 const args = parseArgs({
@@ -36,33 +37,30 @@ async function main() {
   log.debug(args);
 
   // parse args
-  let apMax = parseInt(args.values.max);
-  let nodeCost = args.values.node ? parseInt(args.values.node) : undefined;
-  let targetAP = args.values.target ? parseInt(args.values.target) : undefined;
-
-  if (isNaN(apMax) || apMax < 20) {
-    log.error(
-      `Could not parse argument for --max '${args.values.max}'. Argument must integer >= 20`
-    );
-    log.warn("Using '5' as fallback value for --max");
-    apMax = 144;
-  }
-  if (typeof nodeCost == "number" && (isNaN(nodeCost) || nodeCost < 1)) {
-    log.error(
-      `Could not parse argument for --node '${args.values.node}'. Argument must integer > 0`
-    );
-    nodeCost = undefined;
-  }
-  if (typeof targetAP == "number" && (isNaN(targetAP) || targetAP < 1)) {
-    log.error(
-      `Could not parse argument for --target '${args.values.target}'. Argument must be integer > 0`
-    );
-    targetAP = undefined;
-  }
+  const apMax = parseNumericArg({
+    value: args.values.max,
+    name: "--max",
+    min: 20,
+    fallback: 144
+  });
+  const nodeCost = parseNumericArg({
+    value: args.values.node,
+    name: "--node",
+    min: 1
+  });
+  const targetAP = {
+    value: args.values.target,
+    name: "--target",
+    min: 1
+  };
 
   // parse positionals
-  const apCurr = parseInt(args.positionals[0] || "");
-  if (isNaN(apCurr) || apCurr < 0) {
+  const apCurr = parseNumericArg({
+    value: args.positionals[0],
+    name: "current ap",
+    min: 0
+  });
+  if (!apCurr) {
     throw new Error(
       `Could not parse value for current ap: '${args.positionals[0]}'`
     );
