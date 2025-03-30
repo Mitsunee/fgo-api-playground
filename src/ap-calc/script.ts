@@ -48,11 +48,11 @@ async function main() {
     name: "--node",
     min: 1
   });
-  const targetAP = {
+  const targetAP = parseNumericArg({
     value: args.values.target,
     name: "--target",
     min: 1
-  };
+  });
 
   // parse positionals
   const apCurr = parseNumericArg({
