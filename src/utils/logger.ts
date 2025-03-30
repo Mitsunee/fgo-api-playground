@@ -4,12 +4,14 @@ import spacetime from "spacetime";
 
 export const col = createColors(true);
 
-export function timer() {
+export function createTimer() {
   const start = spacetime.now();
-  return () => {
+  const timer = () => {
     const end = spacetime.now();
     return end.since(start).abbreviated.join(" ") || "under 1s";
   };
+  timer.start = start.epoch;
+  return timer;
 }
 
 const { log, logger } = createLogger({

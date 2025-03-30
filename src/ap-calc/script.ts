@@ -1,8 +1,8 @@
 import spacetime from "spacetime";
 import { parseArgs } from "util";
-import { log, logger, timer } from "~/utils/logger";
+import { log, logger, createTimer } from "~/utils/logger";
 
-const getTime = timer();
+const timer = createTimer();
 const args = parseArgs({
   args: process.argv.slice(2),
   options: {
@@ -132,7 +132,7 @@ async function main() {
 }
 
 main()
-  .then(() => log.success(`Completed in ${getTime()}`))
+  .then(() => log.success(`Completed in ${timer()}`))
   .catch(e => {
     log.info(usageText);
     log.fatal(e);

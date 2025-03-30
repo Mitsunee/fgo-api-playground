@@ -1,5 +1,5 @@
 import { parseArgs } from "util";
-import { log, logger, timer } from "~/utils/logger";
+import { log, logger, createTimer } from "~/utils/logger";
 import { getCacheInfo, writeCacheInfo } from "../getCacheInfo";
 import { CACHE_VER } from "../types";
 import { getRemoteCacheInfo } from "./getRemoteCacheInfo";
@@ -8,7 +8,7 @@ import { processNiceServant } from "./processNiceServant";
 import { getNiceWar } from "./getNiceWar";
 import { processNiceWar } from "./processNiceWar";
 
-const getTime = timer();
+const timer = createTimer();
 const { values: args } = parseArgs({
   args: process.argv.slice(2),
   options: {
@@ -105,5 +105,5 @@ async function main() {
 }
 
 main()
-  .then(() => log.success(`Completed in ${getTime()}`))
+  .then(() => log.success(`Completed in ${timer()}`))
   .catch(e => log.fatal(e));
