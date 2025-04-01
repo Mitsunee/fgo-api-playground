@@ -28,7 +28,7 @@ export class RunList {
   push(apTarget: number, title: string) {
     const deltaAP = apTarget - this.#apCurr;
     if (deltaAP <= 0) {
-      log.warn(
+      log.debug(
         `Skipping run '${title}' because target ${apTarget} is less than current AP of ${this.#apCurr}`
       );
       return;
