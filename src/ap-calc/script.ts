@@ -11,11 +11,12 @@ const args = parseArgs({
     verbose: { type: "boolean", short: "v", default: false },
     max: { type: "string", short: "m", default: "144" },
     target: { type: "string", short: "t" },
-    node: { type: "string", short: "n" }
+    node: { type: "string", short: "n" },
+    "show-all": { type: "boolean", short: "s", default: false }
   },
   allowPositionals: true
 });
-const usageText = `USAGE: pnpm ap-calc [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
+const usageText = `USAGE: pnpm ap-calc [--show-all] [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
 
 async function main() {
   // DEBUG
@@ -52,7 +53,12 @@ async function main() {
     );
   }
   const timerSeconds = parseTimerValue(args.positionals[1]);
-  const runs = new RunList(apCurr, timerSeconds, timer.start);
+  const runs = new RunList(
+    apCurr,
+    timerSeconds,
+    timer.start,
+    args.values["show-all"]
+  );
   log.debug({ apCurr, apMax, timerValue: args.positionals[1], timerSeconds });
 
   // handle node ap cost runs

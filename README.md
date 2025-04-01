@@ -47,6 +47,7 @@ Simple AP Calculator that calculates time to Max AP and targets based on node co
 - `-m`,`--max`: Override for Max AP (Default: `144`)
 - `-n`,`--node`: Node Cost (shows all possible future runs; optional)
 - `-t`,`--target`: Sets target AP (optional)
+- `-s`, `--show-all`: Show all runs, even if already previously possible
 - Positional: Values for current ap (num; required) and time until next AP (either as `M:SS` or `MSS`; optional)
 
 ## Cache
