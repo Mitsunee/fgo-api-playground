@@ -1,7 +1,8 @@
-import spacetime from "spacetime";
 import { parseArgs } from "util";
 import { log, logger, createTimer } from "~/utils/logger";
 import { parseNumericArg } from "~/utils/parseNumericArg";
+import { parseTimerValue } from "./parseTimerValue";
+import { RunList } from "./RunList";
 
 const timer = createTimer();
 const args = parseArgs({
@@ -15,21 +16,6 @@ const args = parseArgs({
   allowPositionals: true
 });
 const usageText = `USAGE: pnpm ap-calc [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
-
-const timeDiffer = (() => {
-  const now = spacetime.now().startOf("second");
-
-  return function (deltaSeconds: number) {
-    const then = now.add(deltaSeconds, "second");
-    const { diff } = then.since(now);
-    return {
-      time: then.format("{time-24}:{second-pad}"),
-      in: [diff.hours, diff.minutes, diff.seconds]
-        .map(v => v.toString().padStart(2, "0"))
-        .join(":")
-    };
-  };
-})();
 
 async function main() {
   // DEBUG
@@ -65,68 +51,24 @@ async function main() {
       `Could not parse value for current ap: '${args.positionals[0]}'`
     );
   }
-  const timerValue = args.positionals[1] || "";
-  let timerSeconds = 300;
-  if (timerValue) {
-    const match = timerValue.match(/^([0-4]):?([0-5][0-9])$/);
-    if (!match) {
-      throw new Error(`Could not parse value for current timer: ${timerValue}`);
-    }
+  const timerSeconds = parseTimerValue(args.positionals[1]);
+  const runs = new RunList(apCurr, timerSeconds, timer.start);
+  log.debug({ apCurr, apMax, timerValue: args.positionals[1], timerSeconds });
 
-    timerSeconds = Number(match[1]) * 60 + Number(match[2]);
-  }
-  log.debug({ apCurr, apMax, timerValue, timerSeconds });
-
-  const table = new Array<{
-    ap: number;
-    title: string;
-    time: string;
-    in: string;
-  }>();
-
+  // handle node ap cost runs
   if (nodeCost) {
-    let runs = 0;
+    let runCount = 0;
     for (let ap = nodeCost; ap <= apMax; ap += nodeCost) {
-      const deltaAP = ap - apCurr;
-      const deltaSeconds = (deltaAP - 1) * 300 + timerSeconds;
-      table.push(
-        Object.assign({ ap, title: `Run #${++runs}` }, timeDiffer(deltaSeconds))
-      );
+      runs.push(ap, `Run ${++runCount}`);
     }
   }
 
-  if (targetAP) {
-    const deltaTargetAP = targetAP - apCurr;
-    const deltaTargetSeconds = (deltaTargetAP - 1) * 300 + timerSeconds;
-    table.push(
-      Object.assign(
-        { ap: targetAP, title: "Target" },
-        timeDiffer(deltaTargetSeconds)
-      )
-    );
-  }
-
-  // handle max AP
-  const deltaMaxAP = apMax - apCurr;
-  const deltaMaxSeconds = (deltaMaxAP - 1) * 300 + timerSeconds;
-  table.push(
-    Object.assign({ ap: apMax, title: "Max AP" }, timeDiffer(deltaMaxSeconds))
-  );
+  // handle target and max AP
+  if (targetAP) runs.push(targetAP, "Target");
+  runs.push(apMax, "Max AP");
 
   // print table
-  console.table(
-    table
-      .filter(run => run.ap >= apCurr)
-      .sort((a, b) => a.ap - b.ap)
-      .reduce(
-        (obj, { title, ...row }) => {
-          obj[title] = row;
-          return obj;
-        },
-        {} as Record<string, Omit<(typeof table)[0], "title">>
-      ),
-    ["ap", "time", "in"]
-  );
+  console.table(runs.toTable(), ["ap", "time", "in"]);
 }
 
 main()
