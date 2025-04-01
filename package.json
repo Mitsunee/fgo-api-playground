@@ -42,6 +42,8 @@
   },
   "dependencies": {
     "@atlasacademy/api-connector": "^5.1.1",
+    "@foxkit/fs": "^0.1.1",
+    "@foxkit/list": "^2.0.0",
     "@foxkit/logger": "^1.1.0",
     "fast-fuzzy": "^1.12.0",
     "picocolors": "^1.1.1",

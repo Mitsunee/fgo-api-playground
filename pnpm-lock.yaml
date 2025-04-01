@@ -11,6 +11,12 @@ importers:
       '@atlasacademy/api-connector':
         specifier: ^5.1.1
         version: 5.1.1
+      '@foxkit/fs':
+        specifier: ^0.1.1
+        version: 0.1.1(@types/node@22.13.1)
+      '@foxkit/list':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@foxkit/logger':
         specifier: ^1.1.0
         version: 1.1.0(@types/node@22.13.1)
@@ -243,6 +249,14 @@ packages:
   '@eslint/plugin-kit@0.2.5':
     resolution: {integrity: sha512-lB05FkqEdUg2AA0xEbUz0SnkXT1LcCTa438W4IWTUh4hdOnVbQyOJ81OrDXsJk/LSiJHubgGEFoR5EHq1NsH1A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@foxkit/fs@0.1.1':
+    resolution: {integrity: sha512-L6SGVvgA7EdYgcanqh2+ojWK8I2fP0wphBqvJTSS3MfqZOdNhCR7EpYsvjVT6cKVw5Dj6GDqBEZM9Yl7ZI3Zhw==}
+    peerDependencies:
+      '@types/node': '>=10'
+
+  '@foxkit/list@2.0.0':
+    resolution: {integrity: sha512-6UVSnnYO0W7YiylLnvOm7QLuRBRtaUHzzpT4P5tLbJLNCd3d/OYF19WoAnUFHnPPQufZL8UVTmeXcfLGS8BrPQ==}
 
   '@foxkit/logger@1.1.0':
     resolution: {integrity: sha512-GgsCKCG1G0HVSy6eHttw25Tbb2zSd7lJRiD75T4zUJyOJ++xbwDSCTTncsd/aqsHJbVnn6ACSzuMi+yAvJmiPQ==}
@@ -1390,6 +1404,12 @@ snapshots:
     dependencies:
       '@eslint/core': 0.10.0
       levn: 0.4.1
+
+  '@foxkit/fs@0.1.1(@types/node@22.13.1)':
+    dependencies:
+      '@types/node': 22.13.1
+
+  '@foxkit/list@2.0.0': {}
 
   '@foxkit/logger@1.1.0(@types/node@22.13.1)':
     dependencies:
