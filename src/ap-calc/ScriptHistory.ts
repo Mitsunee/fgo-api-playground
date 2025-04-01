@@ -34,8 +34,7 @@ function parseRunsFromLine(runsStr: string) {
   return runs;
 }
 
-// WIP
-class HistoryRow {
+export class HistoryRow {
   apStart: number;
   timerOffset: number;
   startTime: number;
@@ -75,19 +74,17 @@ class HistoryRow {
     return row;
   }
 
-  // TODO: serialize() {}
-  /*
-  Format:
-    tz:apStart,timerOffset,Array<[ap,"title"]>
-  */
+  serialize() {
+    const runs = JSON.stringify(this.runs.map(run => [run.ap, run.title]));
+    return `${this.startTime}:${this.apStart},${this.timerOffset},${runs}`;
+  }
 }
-
-export type { HistoryRow };
 
 // WIP
 export class ScriptHistory {
   readonly list = new Array<HistoryRow>();
   readonly fileLoc: string;
+  // eslint-disable-next-line no-unused-private-class-members
   #showAll: boolean;
 
   private constructor(fileLoc: string, showAll: boolean) {

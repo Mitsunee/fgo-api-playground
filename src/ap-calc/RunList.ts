@@ -13,7 +13,7 @@ export interface RunTable {
 export class RunList {
   readonly list = new Array<RunListRow>();
   readonly startTime: number;
-  #apCurr: number;
+  readonly apCurr: number;
   readonly timerOffset: number;
   #differ: TimeDiffer;
   #showAll: boolean;
@@ -25,14 +25,14 @@ export class RunList {
     showAll: boolean
   ) {
     this.startTime = startedAt;
-    this.#apCurr = apCurrent;
+    this.apCurr = apCurrent;
     this.timerOffset = timerSeconds;
     this.#differ = createTimeDiffer(startedAt);
     this.#showAll = showAll;
   }
 
   push(apTarget: number, title: string) {
-    const deltaAP = apTarget - this.#apCurr;
+    const deltaAP = apTarget - this.apCurr;
     const deltaSeconds = Math.max(0, (deltaAP - 1) * 300 + this.timerOffset);
     const diff = this.#differ(deltaSeconds);
     const row: RunListRow = {
@@ -49,7 +49,7 @@ export class RunList {
 
   toTable() {
     return this.list.sort().reduce((obj, { title, ...row }) => {
-      if (!this.#showAll && row.ap < this.#apCurr) return obj;
+      if (!this.#showAll && row.ap < this.apCurr) return obj;
       obj[title] = row;
       return obj;
     }, {} as RunTable);
