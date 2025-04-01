@@ -75,7 +75,7 @@ jobs:
         run: pnpm typecheck
 
   test:
-    needs: [lint, typecheck]
+    needs: [lint, types]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
