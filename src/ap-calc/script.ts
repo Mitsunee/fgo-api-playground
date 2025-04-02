@@ -3,25 +3,41 @@ import { log, logger, createTimer } from "~/utils/logger";
 import { parseNumericArg } from "~/utils/parseNumericArg";
 import { parseTimerValue } from "./parseTimerValue";
 import { RunList } from "./RunList";
+import { join } from "path";
+import { ScriptHistory } from "./ScriptHistory";
 
 const timer = createTimer();
-const args = parseArgs({
+const globalOpts = {
+  verbose: { type: "boolean", short: "v", default: false },
+  help: { type: "boolean", short: "h", default: false },
+  "show-all": { type: "boolean", short: "s", default: false }
+} as const;
+const argsInit = parseArgs({
   args: process.argv.slice(2),
-  options: {
-    verbose: { type: "boolean", short: "v", default: false },
-    max: { type: "string", short: "m", default: "144" },
-    target: { type: "string", short: "t" },
-    node: { type: "string", short: "n" },
-    "show-all": { type: "boolean", short: "s", default: false }
-  },
-  allowPositionals: true
+  options: globalOpts,
+  allowPositionals: true,
+  strict: false,
+  tokens: true
 });
 const usageText = `USAGE: pnpm ap-calc [--show-all] [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
 
-async function main() {
-  // DEBUG
-  if (args.values.verbose) logger.setLogLevel("Debug");
-  log.debug(args);
+// TODO: update usage texts
+function commandHelp() {
+  console.log(usageText);
+}
+
+function commandCalculate() {
+  const args = parseArgs({
+    args: process.argv.slice(2),
+    options: {
+      ...globalOpts,
+      max: { type: "string", short: "m", default: "144" },
+      target: { type: "string", short: "t" },
+      node: { type: "string", short: "n" }
+    },
+    allowPositionals: true
+  });
+  log.debug({ args });
 
   // parse args
   const apMax = parseNumericArg({
@@ -75,6 +91,32 @@ async function main() {
 
   // print table
   console.table(runs.toTable(), ["ap", "time", "in"]);
+  return runs;
+}
+
+async function main() {
+  // DEBUG
+  if (argsInit.values.verbose) logger.setLogLevel("Debug");
+  log.debug({ argsInit });
+
+  if (argsInit.values.help || argsInit.positionals[0] == "help") {
+    commandHelp();
+    return;
+  }
+
+  // load history
+  const historyLoc = join(import.meta.dirname, ".history");
+  const history = await ScriptHistory.loadFromFile(
+    historyLoc,
+    !!argsInit.values["show-all"]
+  );
+
+  // TODO: here is where other commands would go :)
+
+  // handle calculate command
+  const newList = commandCalculate();
+  history.push(newList);
+  await history.updateFile();
 }
 
 main()
