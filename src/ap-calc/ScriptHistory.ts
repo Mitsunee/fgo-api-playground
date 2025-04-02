@@ -1,8 +1,8 @@
-import { readFile } from "@foxkit/fs";
-import type { RunList, RunListRow } from "./RunList";
+import { readFile, writeFile } from "@foxkit/fs";
+import type { RunListRow } from "./RunList";
+import { RunList } from "./RunList";
 import { log } from "~/utils/logger";
-
-// TODO: write tests for parsing history lines
+import { List } from "@foxkit/list";
 
 function parseSettingsFromLine(settingsStr: string) {
   const settings = JSON.parse(`[${settingsStr.replace(":", ",")}]`);
@@ -39,6 +39,7 @@ export class HistoryRow {
   timerOffset: number;
   startTime: number;
   runs = new Array<Pick<RunListRow, "ap" | "title">>();
+  list?: RunList;
 
   private constructor(apStart: number, timerOffset: number, startTime: number) {
     this.apStart = apStart;
@@ -78,13 +79,27 @@ export class HistoryRow {
     const runs = JSON.stringify(this.runs.map(run => [run.ap, run.title]));
     return `${this.startTime}:${this.apStart},${this.timerOffset},${runs}`;
   }
+
+  toRunList(showAllRuns: boolean) {
+    if (this.list) return this.list;
+
+    const runList = new RunList(
+      this.apStart,
+      this.timerOffset,
+      this.startTime,
+      showAllRuns
+    );
+
+    for (const { ap, title } of this.runs) runList.push(ap, title);
+
+    this.list = runList;
+    return runList;
+  }
 }
 
-// WIP
 export class ScriptHistory {
-  readonly list = new Array<HistoryRow>();
+  readonly list = new List<HistoryRow>();
   readonly fileLoc: string;
-  // eslint-disable-next-line no-unused-private-class-members
   #showAll: boolean;
 
   private constructor(fileLoc: string, showAll: boolean) {
@@ -105,7 +120,56 @@ export class ScriptHistory {
       return history;
     }
 
-    // recover existing history
-    // WIP
+    // recover rows from file
+    res.data
+      .map(line => HistoryRow.fromFileLine(line))
+      .sort((a, b) => {
+        return b.startTime - a.startTime;
+      })
+      .forEach(row => history.list.push(row));
+
+    return history;
+  }
+
+  /**
+   * Write updated history to file
+   */
+  async updateFile() {
+    const res = await writeFile(this.fileLoc, this.list, list =>
+      list.map(row => row.serialize()).join("\n")
+    );
+
+    if (res.error) throw res.error;
+  }
+
+  /**
+   * Gets RunList for history entry at given index
+   * @param idx Index where newest run is 0, oldest is 4
+   * @returns RunList created from history entry
+   */
+  getRunList(idx: number) {
+    const row = this.list.get(idx);
+    if (!row) {
+      throw new Error(`Could not retrieve run list at index ${idx}`);
+    }
+
+    return row.toRunList(this.#showAll);
+  }
+
+  /**
+   * Adds new histoy entry given RunList. History will be culled if length exceeds 5
+   * @param runList
+   */
+  push(runList: RunList) {
+    const newRow = HistoryRow.fromRunList(runList);
+    this.list.unshift(newRow);
+    if (this.list.length > 5) this.list.pop();
+  }
+
+  /**
+   * Gets amount of history entries
+   */
+  get length() {
+    return this.list.length;
   }
 }
