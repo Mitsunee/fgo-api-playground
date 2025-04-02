@@ -16,14 +16,43 @@ const argsInit = parseArgs({
   args: process.argv.slice(2),
   options: globalOpts,
   allowPositionals: true,
-  strict: false,
-  tokens: true
+  strict: false
 });
 const usageText = `USAGE: pnpm ap-calc [--show-all] [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
 
 // TODO: update usage texts
 function commandHelp() {
   console.log(usageText);
+}
+
+function commandHistory(history: ScriptHistory) {
+  const args = parseArgs({
+    args: process.argv.slice(2),
+    options: globalOpts,
+    allowPositionals: true
+  });
+  log.debug({ args });
+
+  let idx: number | undefined = undefined;
+  if (args.positionals[0] == "prev" || args.positionals[1] == "prev") {
+    idx = 1;
+  } else {
+    idx = parseNumericArg({
+      value: args.positionals[1],
+      name: "index",
+      min: 1,
+      max: history.length
+    });
+  }
+
+  if (!idx) {
+    throw new Error(
+      `Could not parse positional parameters: '${args.positionals.slice(0, 2).join(" ")}'`
+    );
+  }
+
+  const runs = history.getRunList(idx - 1);
+  console.table(runs.toTable(), ["ap", "time"]);
 }
 
 function commandCalculate() {
@@ -98,8 +127,10 @@ async function main() {
   // DEBUG
   if (argsInit.values.verbose) logger.setLogLevel("Debug");
   log.debug({ argsInit });
+  const firstPositional = argsInit.positionals[0] as string | undefined;
 
-  if (argsInit.values.help || argsInit.positionals[0] == "help") {
+  // handle help command
+  if (argsInit.values.help || firstPositional == "help") {
     commandHelp();
     return;
   }
@@ -110,6 +141,12 @@ async function main() {
     historyLoc,
     !!argsInit.values["show-all"]
   );
+
+  // handle history command
+  if (firstPositional == "history" || firstPositional == "prev") {
+    commandHistory(history);
+    return;
+  }
 
   // TODO: here is where other commands would go :)
 
