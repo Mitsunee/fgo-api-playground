@@ -1,139 +1,156 @@
-import spacetime from "spacetime";
 import { parseArgs } from "util";
-import { log, logger, timer } from "~/utils/logger";
+import { log, logger, createTimer } from "~/utils/logger";
+import { parseNumericArg } from "~/utils/parseNumericArg";
+import { parseTimerValue } from "./parseTimerValue";
+import { RunList } from "./RunList";
+import { join } from "path";
+import { ScriptHistory } from "./ScriptHistory";
+import { commandHelp } from "./commandHelp";
 
-const getTime = timer();
-const args = parseArgs({
+const timer = createTimer();
+const globalOpts = {
+  verbose: { type: "boolean", short: "v", default: false },
+  help: { type: "boolean", short: "h", default: false },
+  "show-all": { type: "boolean", short: "s", default: false }
+} as const;
+const argsInit = parseArgs({
   args: process.argv.slice(2),
-  options: {
-    verbose: { type: "boolean", short: "v", default: false },
-    max: { type: "string", short: "m", default: "144" },
-    target: { type: "string", short: "t" },
-    node: { type: "string", short: "n" }
-  },
-  allowPositionals: true
+  options: globalOpts,
+  allowPositionals: true,
+  strict: false
 });
-const usageText = `USAGE: pnpm ap-calc [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
 
-const timeDiffer = (() => {
-  const now = spacetime.now().startOf("second");
+function commandHistory(history: ScriptHistory) {
+  const args = parseArgs({
+    args: process.argv.slice(2),
+    options: globalOpts,
+    allowPositionals: true
+  });
+  log.debug({ args });
 
-  return function (deltaSeconds: number) {
-    const then = now.add(deltaSeconds, "second");
-    const { diff } = then.since(now);
-    return {
-      time: then.format("{time-24}:{second-pad}"),
-      in: [diff.hours, diff.minutes, diff.seconds]
-        .map(v => v.toString().padStart(2, "0"))
-        .join(":")
-    };
-  };
-})();
+  let idx: number | undefined = undefined;
+  if (args.positionals[0] == "prev" || args.positionals[1] == "prev") {
+    idx = 1;
+  } else {
+    idx = parseNumericArg({
+      value: args.positionals[1],
+      name: "index",
+      min: 1,
+      max: history.length
+    });
+  }
 
-async function main() {
-  // DEBUG
-  if (args.values.verbose) logger.setLogLevel("Debug");
-  log.debug(args);
+  if (!idx) {
+    throw new Error(
+      `Could not parse positional parameters: '${args.positionals.slice(0, 2).join(" ")}'`
+    );
+  }
+
+  const runs = history.getRunList(idx - 1);
+  console.table(runs.toTable(), ["ap", "time"]);
+}
+
+function commandCalculate() {
+  const args = parseArgs({
+    args: process.argv.slice(2),
+    options: {
+      ...globalOpts,
+      max: { type: "string", short: "m", default: "144" },
+      target: { type: "string", short: "t" },
+      node: { type: "string", short: "n" }
+    },
+    allowPositionals: true
+  });
+  log.debug({ args });
 
   // parse args
-  let apMax = parseInt(args.values.max);
-  let nodeCost = args.values.node ? parseInt(args.values.node) : undefined;
-  let targetAP = args.values.target ? parseInt(args.values.target) : undefined;
-
-  if (isNaN(apMax) || apMax < 20) {
-    log.error(
-      `Could not parse argument for --max '${args.values.max}'. Argument must integer >= 20`
-    );
-    log.warn("Using '5' as fallback value for --max");
-    apMax = 144;
-  }
-  if (typeof nodeCost == "number" && (isNaN(nodeCost) || nodeCost < 1)) {
-    log.error(
-      `Could not parse argument for --node '${args.values.node}'. Argument must integer > 0`
-    );
-    nodeCost = undefined;
-  }
-  if (typeof targetAP == "number" && (isNaN(targetAP) || targetAP < 1)) {
-    log.error(
-      `Could not parse argument for --target '${args.values.target}'. Argument must be integer > 0`
-    );
-    targetAP = undefined;
-  }
+  const apMax = parseNumericArg({
+    value: args.values.max,
+    name: "--max",
+    min: 20,
+    fallback: 144
+  });
+  const nodeCost = parseNumericArg({
+    value: args.values.node,
+    name: "--node",
+    min: 1
+  });
+  const targetAP = parseNumericArg({
+    value: args.values.target,
+    name: "--target",
+    min: 1
+  });
 
   // parse positionals
-  const apCurr = parseInt(args.positionals[0] || "");
-  if (isNaN(apCurr) || apCurr < 0) {
+  const apCurr = parseNumericArg({
+    value: args.positionals[0],
+    name: "current ap",
+    min: 0
+  });
+  if (!apCurr) {
     throw new Error(
       `Could not parse value for current ap: '${args.positionals[0]}'`
     );
   }
-  const timerValue = args.positionals[1] || "";
-  let timerSeconds = 300;
-  if (timerValue) {
-    const match = timerValue.match(/^([0-4]):?([0-5][0-9])$/);
-    if (!match) {
-      throw new Error(`Could not parse value for current timer: ${timerValue}`);
-    }
-
-    timerSeconds = Number(match[1]) * 60 + Number(match[2]);
-  }
-  log.debug({ apCurr, apMax, timerValue, timerSeconds });
-
-  const table = new Array<{
-    ap: number;
-    title: string;
-    time: string;
-    in: string;
-  }>();
-
-  if (nodeCost) {
-    let runs = 0;
-    for (let ap = nodeCost; ap <= apMax; ap += nodeCost) {
-      const deltaAP = ap - apCurr;
-      const deltaSeconds = (deltaAP - 1) * 300 + timerSeconds;
-      table.push(
-        Object.assign({ ap, title: `Run #${++runs}` }, timeDiffer(deltaSeconds))
-      );
-    }
-  }
-
-  if (targetAP) {
-    const deltaTargetAP = targetAP - apCurr;
-    const deltaTargetSeconds = (deltaTargetAP - 1) * 300 + timerSeconds;
-    table.push(
-      Object.assign(
-        { ap: targetAP, title: "Target" },
-        timeDiffer(deltaTargetSeconds)
-      )
-    );
-  }
-
-  // handle max AP
-  const deltaMaxAP = apMax - apCurr;
-  const deltaMaxSeconds = (deltaMaxAP - 1) * 300 + timerSeconds;
-  table.push(
-    Object.assign({ ap: apMax, title: "Max AP" }, timeDiffer(deltaMaxSeconds))
+  const timerSeconds = parseTimerValue(args.positionals[1]);
+  const runs = new RunList(
+    apCurr,
+    timerSeconds,
+    timer.start,
+    args.values["show-all"]
   );
+  log.debug({ apCurr, apMax, timerValue: args.positionals[1], timerSeconds });
+
+  // handle node ap cost runs
+  if (nodeCost) {
+    let runCount = 0;
+    for (let ap = nodeCost; ap <= apMax; ap += nodeCost) {
+      runs.push(ap, `Run ${++runCount}`);
+    }
+  }
+
+  // handle target and max AP
+  if (targetAP) runs.push(targetAP, "Target");
+  runs.push(apMax, "Max AP");
 
   // print table
-  console.table(
-    table
-      .filter(run => run.ap >= apCurr)
-      .sort((a, b) => a.ap - b.ap)
-      .reduce(
-        (obj, { title, ...row }) => {
-          obj[title] = row;
-          return obj;
-        },
-        {} as Record<string, Omit<(typeof table)[0], "title">>
-      ),
-    ["ap", "time", "in"]
+  console.table(runs.toTable(), ["ap", "time", "in"]);
+  return runs;
+}
+
+async function main() {
+  // DEBUG
+  if (argsInit.values.verbose) logger.setLogLevel("Debug");
+  const firstPositional = argsInit.positionals[0] as string | undefined;
+  log.debug({ argsInit, firstPositional });
+
+  // handle help command
+  if (argsInit.values.help || firstPositional == "help") {
+    commandHelp(argsInit.positionals);
+    return;
+  }
+
+  // load history
+  const historyLoc = join(import.meta.dirname, ".history");
+  const history = await ScriptHistory.loadFromFile(
+    historyLoc,
+    !!argsInit.values["show-all"]
   );
+
+  // handle history command
+  if (firstPositional == "history" || firstPositional == "prev") {
+    commandHistory(history);
+    return;
+  }
+
+  // handle calculate command
+  const newList = commandCalculate();
+  history.push(newList);
+  await history.updateFile();
 }
 
 main()
-  .then(() => log.success(`Completed in ${getTime()}`))
+  .then(() => log.success(`Completed in ${timer()}`))
   .catch(e => {
-    log.info(usageText);
     log.fatal(e);
   });

@@ -39,15 +39,12 @@ Script that lists event welfare Servants that have not yet been released on the 
 ### AP Calc
 
 ```
-pnpm ap-calc [-m,--max <num>] [-n,--node <num>] [-t,--target <num>] <current-ap> [<current-timer>]
+pnpm ap-calc [-vsh]
 ```
 
 Simple AP Calculator that calculates time to Max AP and targets based on node cost or target AP. Output is given as a table with time (24h notation) and delta until that point.
 
-- `-m`,`--max`: Override for Max AP (Default: `144`)
-- `-n`,`--node`: Node Cost (shows all possible future runs; optional)
-- `-t`,`--target`: Sets target AP (optional)
-- Positional: Values for current ap (num; required) and time until next AP (either as `M:SS` or `MSS`; optional)
+See `-h` or `--help` for manual page.
 
 ## Cache
 
