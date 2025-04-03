@@ -5,6 +5,7 @@ import { parseTimerValue } from "./parseTimerValue";
 import { RunList } from "./RunList";
 import { join } from "path";
 import { ScriptHistory } from "./ScriptHistory";
+import { commandHelp } from "./commandHelp";
 
 const timer = createTimer();
 const globalOpts = {
@@ -18,12 +19,6 @@ const argsInit = parseArgs({
   allowPositionals: true,
   strict: false
 });
-const usageText = `USAGE: pnpm ap-calc [--show-all] [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]`;
-
-// TODO: update usage texts
-function commandHelp() {
-  console.log(usageText);
-}
 
 function commandHistory(history: ScriptHistory) {
   const args = parseArgs({
@@ -131,7 +126,7 @@ async function main() {
 
   // handle help command
   if (argsInit.values.help || firstPositional == "help") {
-    commandHelp();
+    commandHelp(argsInit.positionals);
     return;
   }
 
@@ -159,6 +154,5 @@ async function main() {
 main()
   .then(() => log.success(`Completed in ${timer()}`))
   .catch(e => {
-    log.info(usageText);
     log.fatal(e);
   });
