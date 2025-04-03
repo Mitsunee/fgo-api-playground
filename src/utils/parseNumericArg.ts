@@ -41,8 +41,8 @@ export function parseNumericArg<TFallback = undefined>(
     log.error(err);
     if (typeof opts.fallback !== "undefined") {
       log.warn(`Using '${opts.fallback}' as fallback value for ${opts.name}`);
-      return opts.fallback;
     }
+    return opts.fallback as TFallback;
   }
 
   return value;
