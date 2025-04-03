@@ -121,8 +121,8 @@ function commandCalculate() {
 async function main() {
   // DEBUG
   if (argsInit.values.verbose) logger.setLogLevel("Debug");
-  log.debug({ argsInit });
   const firstPositional = argsInit.positionals[0] as string | undefined;
+  log.debug({ argsInit, firstPositional });
 
   // handle help command
   if (argsInit.values.help || firstPositional == "help") {
@@ -142,8 +142,6 @@ async function main() {
     commandHistory(history);
     return;
   }
-
-  // TODO: here is where other commands would go :)
 
   // handle calculate command
   const newList = commandCalculate();
