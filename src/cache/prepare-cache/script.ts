@@ -20,7 +20,11 @@ const { values: args } = parseArgs({
     /**
      * Reprocess data without checking for updates
      */
-    reprocess: { type: "boolean", short: "r", default: false }
+    reprocess: { type: "boolean", short: "r", default: false },
+    /**
+     * Redownload all Quest Phases, even if cached files exist
+     */
+    "update-quests": { type: "boolean", short: "q", default: false }
   }
 });
 
@@ -99,7 +103,13 @@ async function main() {
   // perform data update
   await Promise.all([
     processNiceServant(niceServantJP, niceServantEN),
-    processNiceWar(niceWarJP, niceWarEN, updateJP, updateEN)
+    processNiceWar(
+      niceWarJP,
+      niceWarEN,
+      updateJP,
+      updateEN,
+      args["update-quests"]
+    )
   ]);
   log.success("Wrote new data cache");
 }

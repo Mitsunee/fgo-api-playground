@@ -80,3 +80,4 @@ Data should always be retrieved with the provided utilities in [`./src/cache`](.
 - `--verbose`, `-v`: Show debug output
 - `--force-check`, `-f`: Force checking API for updated exports
 - `--reprocess`, `-r`: Don't check API and reprocess cached exports (disables `-f`!)
+- `--update-quests`,`-q`: Redownload all Quest Phases, even if cached files exist

@@ -4,12 +4,12 @@ import { log } from "~/utils/logger";
 import { freeQuestsCache, warsCache } from "..";
 import { getBasicQuestPhase } from "./getBasicQuestPhase";
 
-// WIP
 export async function processNiceWar(
   niceWarJP: NiceWar[],
   niceWarEN: NiceWar[],
   updateJP = false,
-  updateEN = false
+  updateEN = false,
+  updateQuest = false
 ) {
   const freeQuestList = new Array<FreeQuest>();
   const warsList = new Array<War>();
@@ -41,7 +41,7 @@ export async function processNiceWar(
           region,
           questJP.id,
           questJP.phases.length,
-          region == "JP" ? updateJP : updateEN
+          (region == "JP" ? updateJP : updateEN) && updateQuest
         );
 
         const freeQuest: FreeQuest = {
