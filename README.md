@@ -28,13 +28,15 @@ Script to easily search for Servants by name.
 - `--no-original`: hide the original name for search results of alternative names
 - `--no-alt`: do not consider alternative names in searches
 
-### Future Welfare Servant Search
+### Welfare Servant Search
 
 ```
 pnpm tsx src/welfares/script.ts
 ```
 
 Script that lists event welfare Servants that have not yet been released on the EN server.
+
+See `-h` or `--help` for manual page.
 
 ### AP Calc
 

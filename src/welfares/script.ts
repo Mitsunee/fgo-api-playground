@@ -10,6 +10,7 @@ const { values: args } = parseArgs({
   args: process.argv.slice(2),
   options: {
     verbose: { type: "boolean", short: "v", default: false },
+    help: { type: "boolean", short: "h", default: false },
     collection: { type: "boolean", short: "c", default: false },
     unreleased: { type: "boolean", short: "u", default: true },
     released: { type: "boolean", short: "r", default: false }
@@ -17,10 +18,25 @@ const { values: args } = parseArgs({
   allowNegative: true
 });
 
+const textHelp = `Welfares\n\nUsage:
+  welfares [-vhcr] [--no-unreleased]\n\nOptions:
+  -v,--verbose      Enable debug logging
+  -h,--help         Print this help text and exit
+  -c,--collection   Show Collection Number instead of internal ID
+  -r,--released     Show released Welfare Servants (disabled by default)
+  --no-released     Hide released Welfare Servants
+  -u,--unreleased   Show unreleased Welfare Servants (enabled by default)
+  --no-unreleased   Hide unreleased Welfare Servants`;
+
 async function main() {
   // DEBUG
   if (args.verbose) logger.setLogLevel("Debug");
   log.debug(args);
+
+  if (args.help) {
+    console.log(textHelp);
+    return;
+  }
 
   const [niceServantJP, niceServantEN, servantsList] = await Promise.all([
     getNiceServant("JP", false),
