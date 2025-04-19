@@ -26,8 +26,11 @@ async function main() {
   ]);
   const servantIdsEN = new Set(niceServantEN.map(s => s.id));
   const servantsMap = listToMap(servantsList);
+  const niceServantJPSorted = niceServantJP.toSorted(
+    (a, b) => a.collectionNo - b.collectionNo
+  );
 
-  for (const niceServant of niceServantJP) {
+  for (const niceServant of niceServantJPSorted) {
     if (servantIdsEN.has(niceServant.id)) continue;
     if (
       niceServant.ascensionMaterials["1"]?.items[0]?.item.type == "eventItem"
