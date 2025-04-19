@@ -10,8 +10,11 @@ const { values: args } = parseArgs({
   args: process.argv.slice(2),
   options: {
     verbose: { type: "boolean", short: "v", default: false },
-    collection: { type: "boolean", short: "c", default: false }
-  }
+    collection: { type: "boolean", short: "c", default: false },
+    unreleased: { type: "boolean", short: "u", default: true },
+    released: { type: "boolean", short: "r", default: false }
+  },
+  allowNegative: true
 });
 
 async function main() {
@@ -26,16 +29,46 @@ async function main() {
   ]);
   const servantIdsEN = new Set(niceServantEN.map(s => s.id));
   const servantsMap = listToMap(servantsList);
-  const niceServantJPSorted = niceServantJP.toSorted(
-    (a, b) => a.collectionNo - b.collectionNo
-  );
+  const welfares = niceServantJP
+    .filter(niceServant => {
+      // check ascension mats for event item
+      if (
+        niceServant.ascensionMaterials["1"]?.items[0]?.item.type != "eventItem"
+      ) {
+        return false;
+      }
 
-  for (const niceServant of niceServantJPSorted) {
-    if (servantIdsEN.has(niceServant.id)) continue;
-    if (
-      niceServant.ascensionMaterials["1"]?.items[0]?.item.type == "eventItem"
-    ) {
-      const servant = servantsMap[niceServant.id];
+      // filter based on --unreleased and --released args
+      const released = servantIdsEN.has(niceServant.id);
+      if ((released && !args.released) || (!released && !args.unreleased)) {
+        return false;
+      }
+
+      return true;
+    })
+    .reduce(
+      (map, niceServant) => {
+        const released = servantIdsEN.has(niceServant.id);
+
+        if (released) {
+          map.released.push(servantsMap[niceServant.id]);
+        } else {
+          map.unreleased.push(servantsMap[niceServant.id]);
+        }
+
+        return map;
+      },
+      { released: new Array<Servant>(), unreleased: new Array<Servant>() }
+    );
+
+  // sort by collectionNo
+  welfares.released.sort((a, b) => a.collectionNo - b.collectionNo);
+  welfares.unreleased.sort((a, b) => a.collectionNo - b.collectionNo);
+
+  // print released welfares
+  if (welfares.released.length) {
+    console.log(`Released welfares:`);
+    for (const servant of welfares.released) {
       const describedName = describeServant(servant, {
         showClass: true,
         showId: !args.collection,
@@ -43,6 +76,25 @@ async function main() {
       });
       console.log(` -  ${describedName}`);
     }
+
+    // print empty line
+    console.log("");
+  }
+
+  // print unreleased welfares
+  if (welfares.unreleased.length) {
+    console.log(`Unreleased welfares:`);
+    for (const servant of welfares.unreleased) {
+      const describedName = describeServant(servant, {
+        showClass: true,
+        showId: !args.collection,
+        showCollectionNo: args.collection
+      });
+      console.log(` -  ${describedName}`);
+    }
+
+    // print empty line
+    console.log("");
   }
 }
 
