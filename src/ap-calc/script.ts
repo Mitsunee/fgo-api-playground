@@ -87,7 +87,7 @@ function commandCalculate() {
     name: "current ap",
     min: 0
   });
-  if (!apCurr) {
+  if (typeof apCurr != "number") {
     throw new Error(
       `Could not parse value for current ap: '${args.positionals[0]}'`
     );
