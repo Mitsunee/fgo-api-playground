@@ -1,9 +1,10 @@
-import type { MatchData } from "fast-fuzzy";
-import { Searcher } from "fast-fuzzy";
 import { parseArgs } from "util";
-import { servantsCache } from "~/cache";
 import { describeServant } from "~/utils/describeServant";
-import { col, log, logger, createTimer } from "~/utils/logger";
+import { log, logger, createTimer } from "~/utils/logger";
+import {
+  createServantSearcher,
+  prettyPrintMatch
+} from "~/utils/ServantSearcher";
 
 const timer = createTimer();
 const args = parseArgs({
@@ -31,17 +32,6 @@ const textHelp = `Search Servant\n\nUsage:
   --alt             Search alternative Names (enabled by default)
   --no-alt          Do not search alternative Names`;
 
-function prettyPrintMatch(match: MatchData<unknown>) {
-  const text = match.original;
-  const { index, length } = match.match;
-  const end = index + length;
-  const before = text.slice(0, index);
-  const matched = text.slice(index, end);
-  const after = text.substring(end);
-
-  return `${before}${col.bold(col.redBright(matched))}${after}`;
-}
-
 async function main() {
   // DEBUG
   if (args.values.verbose) logger.setLogLevel("Debug");
@@ -66,15 +56,7 @@ async function main() {
   }
 
   // create searcher
-  const servantsList = await servantsCache.read();
-  const searcher = new Searcher(servantsList, {
-    keySelector: candidate =>
-      args.values.alt
-        ? [candidate.name].concat(candidate.names)
-        : [candidate.name],
-    returnMatchData: true,
-    threshold
-  });
+  const searcher = await createServantSearcher(args.values.alt, threshold);
 
   // handle queries
   for (const query of args.positionals) {
