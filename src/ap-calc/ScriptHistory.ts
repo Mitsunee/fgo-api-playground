@@ -139,7 +139,7 @@ export class ScriptHistory {
       list.map(row => row.serialize()).join("\n")
     );
 
-    if (res.error) throw res.error;
+    if (res.error) throw res.error as Error;
   }
 
   /**

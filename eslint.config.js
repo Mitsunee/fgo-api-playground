@@ -57,6 +57,14 @@ export default tsEslint.config([
   foxkit.base,
   foxkit.typescript,
   foxkit.configureTS({ tsconfigRootDir: import.meta.dirname }),
+  {
+    // TEMP: disable rule that'll be gone with next version of my lint config
+    //       because omg this is annoying, I am not dealing with that lol
+    files: foxkit.typescript.files,
+    rules: {
+      "@typescript-eslint/no-unnecessary-condition": "off"
+    }
+  },
   importCfg,
   importConfigsCfg,
   prettierCfg
