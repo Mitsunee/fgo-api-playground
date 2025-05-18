@@ -10,6 +10,7 @@ const args = parseArgs({
   args: process.argv.slice(2),
   options: {
     verbose: { type: "boolean", short: "v", default: false },
+    help: { type: "boolean", short: "h", default: false },
     threshold: { type: "string", short: "t", default: "0.7" },
     collection: { type: "boolean", short: "c", default: false },
     original: { type: "boolean", default: true },
@@ -18,6 +19,17 @@ const args = parseArgs({
   allowPositionals: true,
   allowNegative: true
 });
+
+const textHelp = `Search Servant\n\nUsage:
+  search-servant [-vc] [-t <float>] [--no-original] [--no-alt] <...queries>\n\nOptions:
+  -v,--verbose      Enable debug logging
+  -h,--help         Print this help text and exit
+  -t,--threshold    Modify search threshold (float between 0 and 1)
+  -c,--collection   Show Collection Number instead of internal ID
+  --original        Show original name (enabled by default)
+  --no-original     Hide original name
+  --alt             Search alternative Names (enabled by default)
+  --no-alt          Do not search alternative Names`;
 
 function prettyPrintMatch(match: MatchData<unknown>) {
   const text = match.original;
@@ -34,6 +46,11 @@ async function main() {
   // DEBUG
   if (args.values.verbose) logger.setLogLevel("Debug");
   log.debug(args);
+
+  if (args.values.help) {
+    console.log(textHelp);
+    return;
+  }
 
   // handle treshold arg
   let threshold = 0.7;

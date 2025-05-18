@@ -18,15 +18,12 @@ pnpm prepare-cache
 ### Servant Search
 
 ```
-pnpm search-servant [-c,--collection] [-t,--threshold] ...queries
+pnpm search-servant [-vc] [-t <float>] [--no-original] [--no-alt] <...queries>
 ```
 
 Script to easily search for Servants by name.
 
-- `-t`/`--threshold`: fuzzy search threshold (number from 0 to 1)
-- `-c`/`--collection`: display collection number instead of id
-- `--no-original`: hide the original name for search results of alternative names
-- `--no-alt`: do not consider alternative names in searches
+See `-h` or `--help` for manual page.
 
 ### Welfare Servant Search
 
