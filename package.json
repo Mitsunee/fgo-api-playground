@@ -29,28 +29,28 @@
     "pre-commit": "pnpm nano-staged"
   },
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
-    "@types/node": "^22.13.1",
+    "@eslint/js": "^9.27.0",
+    "@types/node": "^22.15.18",
     "esbuild-register": "^3.6.0",
-    "eslint": "^9.19.0",
-    "eslint-config-foxkit": "5.1.0",
-    "eslint-config-prettier": "^10.0.1",
+    "eslint": "^9.27.0",
+    "eslint-config-foxkit": "5.3.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",
     "nano-staged": "^0.8.0",
-    "prettier": "^3.4.2",
-    "simple-git-hooks": "^2.11.1",
-    "typescript": "5.7.3",
-    "typescript-eslint": "8.23.0",
+    "prettier": "^3.5.3",
+    "simple-git-hooks": "^2.13.0",
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.32.1",
     "uvu": "^0.5.6"
   },
   "dependencies": {
     "@atlasacademy/api-connector": "^5.1.1",
-    "@foxkit/fs": "^0.1.1",
-    "@foxkit/list": "^2.0.0",
+    "@foxkit/fs": "^0.1.2",
+    "@foxkit/list": "^2.1.0",
     "@foxkit/logger": "^1.1.0",
     "fast-fuzzy": "^1.12.0",
     "picocolors": "^1.1.1",
-    "spacetime": "^7.7.0",
-    "tsx": "^4.19.2"
+    "spacetime": "^7.10.0",
+    "tsx": "^4.19.4"
   }
 }
