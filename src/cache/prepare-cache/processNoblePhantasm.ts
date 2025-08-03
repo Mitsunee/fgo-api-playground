@@ -63,11 +63,7 @@ function convertCardType(card: Card): CardType {
     case Card.ARTS:
     case Card.QUICK:
       return card;
-    case Card.NONE:
-    case Card.EXTRA:
-    case Card.BLANK:
-    case Card.WEAK:
-    case Card.STRENGTH:
+    default:
       throw new Error(`Unsupported NP Card type ${card}`);
   }
 }
