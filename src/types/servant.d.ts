@@ -30,4 +30,5 @@ interface Servant extends EntityBase {
   passiveSkills: Array<number>;
   noblePhantasms: Array<ServantNP>;
   costumes: Array<ServantCostume>;
+  bondCE?: number;
 }

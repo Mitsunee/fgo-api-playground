@@ -40,6 +40,7 @@ export function createServantProcessor({
       ...enhancements
     };
 
+    if (servantJP.bondEquip) servant.bondCE = servantJP.bondEquip;
     if (servantEN) servant.en = true;
 
     servantsList.push(servant);
