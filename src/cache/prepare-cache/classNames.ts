@@ -21,7 +21,7 @@ export function convertClassName(name: ClassName): ServantClass {
     case ClassName.BEAST_ERESH:
       return "beast";
     // @ts-ignore
-    case "unBeast": // TEMP: unbeast is not yet in the atlas data
+    case "unBeastOlgaMarie": // TEMP: unbeast is not yet in the atlas data
       return "beast";
     default:
       throw new Error(`Unsupported class name '${name}'`);
