@@ -44,3 +44,4 @@ export const freeQuestsCache = new CacheFile<FreeQuest[]>(
   "data/freeQuestsList.json"
 );
 export const warsCache = new CacheFile<War[]>("data/warsList.json");
+export const scoresCache = new CacheFile<ClassScore[]>("data/scoreList.json");

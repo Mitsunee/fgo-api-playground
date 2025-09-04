@@ -7,6 +7,7 @@ import { getNiceServant } from "./getNiceServant";
 import { processNiceServant } from "./processNiceServant";
 import { getNiceWar } from "./getNiceWar";
 import { processNiceWar } from "./processNiceWar";
+import { getNiceClassScore } from "./getNiceClassScore";
 
 const timer = createTimer();
 const { values: args } = parseArgs({
@@ -48,10 +49,19 @@ async function main() {
       getNiceWar("JP"),
       getNiceWar("EN")
     ]);
+    const [niceScoreJP, niceScoreEN] = await Promise.all([
+      getNiceClassScore("JP"),
+      getNiceClassScore("EN")
+    ]);
 
     // perform data update
     await Promise.all([
-      processNiceServant(niceServantJP, niceServantEN),
+      processNiceServant(
+        niceServantJP,
+        niceServantEN,
+        niceScoreJP,
+        niceScoreEN
+      ),
       processNiceWar(niceWarJP, niceWarEN)
     ]);
     log.success("Wrote new data cache");
@@ -88,6 +98,10 @@ async function main() {
     getNiceWar("JP", updateJP),
     getNiceWar("EN", updateEN)
   ]);
+  const [niceScoreJP, niceScoreEN] = await Promise.all([
+    getNiceClassScore("JP"),
+    getNiceClassScore("EN")
+  ]);
 
   if (!noUpdate) {
     // update local info
@@ -102,7 +116,7 @@ async function main() {
 
   // perform data update
   await Promise.all([
-    processNiceServant(niceServantJP, niceServantEN),
+    processNiceServant(niceServantJP, niceServantEN, niceScoreJP, niceScoreEN),
     processNiceWar(
       niceWarJP,
       niceWarEN,

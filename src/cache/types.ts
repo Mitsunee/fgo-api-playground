@@ -20,9 +20,10 @@ export interface CacheInfo {
 /**
  * Current Cache Version
  */
-export const CACHE_VER = 1;
+export const CACHE_VER = 2;
 
 /* Cache Version History:
 v0: Development
 v1: added nice_war
+v2: added nice_class_Score
 */
