@@ -1,6 +1,14 @@
 import { ClassName } from "@atlasacademy/api-connector";
 
 export function convertClassName(name: ClassName): ServantClass {
+  // TEMP: manually handle grand servants
+  if (name.startsWith("grandUnBeast")) {
+    return "grandUnbeast";
+  }
+  if (name.startsWith("grand")) {
+    return name as Extract<ServantClass, `grand${string}`>;
+  }
+
   switch (name) {
     case ClassName.SABER:
     case ClassName.ARCHER:
@@ -22,8 +30,8 @@ export function convertClassName(name: ClassName): ServantClass {
       // case ClassName.UN_BEAST_OLGA_MARIE: // not yet published change
       return "beast";
     // @ts-ignore
-    case "unBeastOlgaMarie": // TEMP: unbeast is not yet in the atlas data
-      return "beast";
+    case "unBeastOlgaMarie": // TEMP: unbeast is not yet in the api-connector
+      return "unbeast";
     default:
       throw new Error(`Unsupported class name '${name}'`);
   }

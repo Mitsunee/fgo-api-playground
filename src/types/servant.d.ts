@@ -13,7 +13,23 @@ type ServantClass =
   | "moonCancer"
   | "pretender"
   | "foreigner"
-  | "beast";
+  | "beast"
+  | "unbeast"
+  | "grandSaber"
+  | "grandArcher"
+  | "grandLancer"
+  | "grandRider"
+  | "grandCaster"
+  | "grandAssassin"
+  | "grandBerserker"
+  | "grandShielder"
+  | "grandRuler"
+  | "grandAlterego"
+  | "grandAvenger"
+  | "grandMoonCancer"
+  | "grandForeigner"
+  | "grandPretender"
+  | "grandUnbeast";
 
 interface Servant extends EntityBase {
   names: string[];
