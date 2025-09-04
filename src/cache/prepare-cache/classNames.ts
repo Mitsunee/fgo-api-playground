@@ -19,6 +19,7 @@ export function convertClassName(name: ClassName): ServantClass {
       return name;
     case ClassName.BEAST:
     case ClassName.BEAST_ERESH:
+      // case ClassName.UN_BEAST_OLGA_MARIE: // not yet published change
       return "beast";
     // @ts-ignore
     case "unBeastOlgaMarie": // TEMP: unbeast is not yet in the atlas data
