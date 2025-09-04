@@ -53,17 +53,20 @@ Instead of constantly redownloading the same data the `pnpm prepare-cache` scrip
 data
 ├── freeQuestList.json (transformed free quest data)
 ├── itemsList.json (transformed item data)
+├── scoreList.json (transformed class score and grand score data)
 ├── servantsList.json (transformed servant data)
 ├── skillsList.json (transformed skill data)
 ├── warsList.json (transformed war data)
 └── cache
    ├── info.json (information cache export age and last check date)
    ├── EN
+   |  ├── class_score_list.json (full list of class scores and grand scores)
    |  ├── nice_servant.json (niceServant (with lore) export)
    |  ├── nice_war.json (niceWar export)
    |  └── questPhase
    |      └── {id}_{phase}.json (basic quest phase cache)
    └── JP
+   |  ├── class_score_list.json (full list of class scores and grand scores)
       ├── nice_servant.json (niceServant (with lore) export)
       ├── nice_war.json (niceWar export)
       └── questPhase
