@@ -46,6 +46,14 @@ export function createClassScoreProcessor(itemProcessor: ItemProcessor) {
           next: []
         };
 
+        // add detail if available
+        const squareEN = boardEN?.squares.find(
+          squareEN => squareEN.id == square.id
+        );
+        const detail =
+          squareEN?.targetSkill?.detail || squareEN?.targetCommandSpell?.detail;
+        if (detail) node.detail = detail;
+
         // process items
         for (const itemAmount of square.items) {
           // why is QP an item here?
@@ -78,7 +86,7 @@ export function createClassScoreProcessor(itemProcessor: ItemProcessor) {
           }
         }
 
-        // mark EN if available
+        // mark EN and if available
         if (boardEN) score.en = true;
 
         // register node in map
