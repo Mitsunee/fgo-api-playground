@@ -78,6 +78,9 @@ export function createClassScoreProcessor(itemProcessor: ItemProcessor) {
           }
         }
 
+        // mark EN if available
+        if (boardEN) score.en = true;
+
         // register node in map
         score.nodes[square.id] = node;
       }
