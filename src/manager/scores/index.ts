@@ -4,6 +4,9 @@ import { describeServantClass } from "~/utils/describeServantClass";
 import { chooseScore } from "./chooseScore";
 import { loadUserScore } from "./loadUserScores";
 import { createBlankUserScore } from "./createBlankUserScore";
+import { log } from "~/utils/logger";
+import { getScoreMats } from "./getScoreMats";
+import { printItemList } from "~/utils/printItemList";
 
 export async function scoresManager(rl: Interface) {
   const scoresList = await scoresCache.read();
@@ -29,10 +32,18 @@ export async function scoresManager(rl: Interface) {
     );
     switch (opt) {
       case "1":
-      case "2":
         console.error("UNIMPLEMENTED");
         continue; // TEMP
+      case "2": {
+        const scoreMats = getScoreMats(scoreData, userScore);
+        console.log(
+          `Required Materials for ${scoreData.name} (${userScore.unlockedNodes.length}/${Object.keys(scoreData.nodes).length}):`
+        );
+        await printItemList(scoreMats.matAmounts, scoreMats.qp);
+        continue;
+      }
       case "3":
+        log.debug(`writing blank score to ${userScoreFile.path}`);
         await userScoreFile.write(createBlankUserScore(scoreData.id));
         continue;
       default:
