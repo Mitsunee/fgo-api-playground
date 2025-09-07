@@ -44,7 +44,7 @@
     "uvu": "^0.5.6"
   },
   "dependencies": {
-    "@atlasacademy/api-connector": "^5.2.0",
+    "@atlasacademy/api-connector": "^5.2.1",
     "@foxkit/fs": "^0.1.2",
     "@foxkit/list": "^2.1.0",
     "@foxkit/logger": "^1.1.0",

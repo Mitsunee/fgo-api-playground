@@ -1,14 +1,6 @@
 import { ClassName } from "@atlasacademy/api-connector";
 
 export function convertClassName(name: ClassName): ServantClass {
-  // TEMP: manually handle grand servants
-  if (name.startsWith("grandUnBeast")) {
-    return "grandUnbeast";
-  }
-  if (name.startsWith("grand")) {
-    return name as Extract<ServantClass, `grand${string}`>;
-  }
-
   switch (name) {
     case ClassName.SABER:
     case ClassName.ARCHER:
@@ -27,11 +19,29 @@ export function convertClassName(name: ClassName): ServantClass {
       return name;
     case ClassName.BEAST:
     case ClassName.BEAST_ERESH:
-      // case ClassName.UN_BEAST_OLGA_MARIE: // not yet published change
       return "beast";
-    // @ts-ignore
-    case "unBeastOlgaMarie": // TEMP: unbeast is not yet in the api-connector
+    case ClassName.UN_BEAST_OLGA_MARIE:
       return "unbeast";
+    case ClassName.GRAND_SABER:
+    case ClassName.GRAND_ARCHER:
+    case ClassName.GRAND_LANCER:
+    case ClassName.GRAND_RIDER:
+    case ClassName.GRAND_CASTER:
+    case ClassName.GRAND_ASSASSIN:
+    case ClassName.GRAND_BERSERKER:
+    case ClassName.GRAND_SHIELDER:
+    case ClassName.GRAND_RULER:
+    case ClassName.GRAND_ALTER_EGO:
+    case ClassName.GRAND_AVENGER:
+    case ClassName.GRAND_MOON_CANER:
+    case ClassName.GRAND_FOREIGNER:
+    case ClassName.GRAND_PRETENDER:
+      return name as Extract<ServantClass, `grand${string}`>;
+    case ClassName.GRAND_BEAST_DRACO:
+    case ClassName.GRAND_BEAST_ERESH:
+    case ClassName.GRAND_UN_BEAST_OLGA_MARIE:
+      return "grandUnbeast";
+
     default:
       throw new Error(`Unsupported class name '${name}'`);
   }

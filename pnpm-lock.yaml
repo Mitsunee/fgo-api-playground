@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@atlasacademy/api-connector':
-        specifier: ^5.2.0
-        version: 5.2.0
+        specifier: ^5.2.1
+        version: 5.2.1
       '@foxkit/fs':
         specifier: ^0.1.2
         version: 0.1.2(@types/node@22.18.1)
@@ -75,8 +75,8 @@ importers:
 
 packages:
 
-  '@atlasacademy/api-connector@5.2.0':
-    resolution: {integrity: sha512-0BqQ5NYnftuHbE3ypQJdJWswWQfVS/NrvuSqkBYqd0X5ycAhHwsA9qmauyMtkAUmOGs6R7/w072TugGq10K/jA==}
+  '@atlasacademy/api-connector@5.2.1':
+    resolution: {integrity: sha512-zUfiWx7T5EkcN+mDvvfCD9h5ocgO4yIYQA8D+nwRzEyrdR7vAofoJhn/lsa4tTLD7TuhHaY+vG28Z43vgTGRpw==}
 
   '@esbuild/aix-ppc64@0.25.9':
     resolution: {integrity: sha512-OaGtL73Jck6pBKjNIe24BnFE6agGl+6KxDtTfHhy1HmhthfKouEcOhqpSL64K4/0WCtbKFLOdzD/44cJ4k9opA==}
@@ -1358,7 +1358,7 @@ packages:
 
 snapshots:
 
-  '@atlasacademy/api-connector@5.2.0':
+  '@atlasacademy/api-connector@5.2.1':
     dependencies:
       axios: 0.27.2
     transitivePeerDependencies:
