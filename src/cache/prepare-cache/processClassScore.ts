@@ -38,6 +38,9 @@ export function createClassScoreProcessor(itemProcessor: ItemProcessor) {
       for (const square of boardJP.squares) {
         // skip if blank
         if (square.flags.includes(ClassBoardSquareFlag.BLANK)) continue;
+        if (square.flags.includes(ClassBoardSquareFlag.START)) {
+          score.startNodes.push(square.id);
+        }
 
         const node: ClassScoreNode = {
           id: square.id,
