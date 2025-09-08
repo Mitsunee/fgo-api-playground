@@ -7,6 +7,7 @@ import { createBlankUserScore } from "./createBlankUserScore";
 import { log } from "~/utils/logger";
 import { getScoreMats } from "./getScoreMats";
 import { printItemList } from "~/utils/printItemList";
+import { unlockScoreNodes } from "./unlockScoreNodes";
 
 export async function scoresManager(rl: Interface) {
   const scoresList = await scoresCache.read();
@@ -32,8 +33,9 @@ export async function scoresManager(rl: Interface) {
     );
     switch (opt) {
       case "1":
-        console.error("UNIMPLEMENTED");
-        continue; // TEMP
+        await unlockScoreNodes(scoreData, userScore, rl);
+        await userScoreFile.write(userScore);
+        continue;
       case "2": {
         const scoreMats = getScoreMats(scoreData, userScore);
         console.log(

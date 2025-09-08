@@ -16,7 +16,7 @@ async function main() {
   if (args.verbose) logger.setLogLevel("Debug");
   log.debug(args);
 
-  // CODE GOES HERE
+  // TEMP: immediatly load scoresManager, while nothing else is implemented
   const { scoresManager } = await import("./scores");
   const res = await scoresManager(rl);
   log.debug(res);
