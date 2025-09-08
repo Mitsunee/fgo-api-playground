@@ -10,5 +10,5 @@ node_modules/
 .env.local
 dist/
 data/
-src/temp.ts
+src/temp**.ts
 src/ap-calc/.history
