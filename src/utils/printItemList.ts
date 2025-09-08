@@ -20,13 +20,13 @@ export async function printItemList(matAmounts: Record<ID, number>, qp = 0) {
   }
 
   console.log(
-    `┌${"─".repeat(maxNameLen + 2)}┬${"─".repeat(qpPretty.length + 2)}┐\n${rows
+    `┌${"─".repeat(maxNameLen + 2)}┬${"─".repeat(maxNumLen + 2)}┐\n${rows
       .map(
         ([item, amount]) =>
-          `│ ${item.padStart(maxNameLen, " ")} │ ${amount.padEnd(qpPretty.length, " ")} │\n`
+          `│ ${item.padStart(maxNameLen, " ")} │ ${amount.padEnd(maxNumLen, " ")} │\n`
       )
       .join(
         ""
-      )}│ ${"QP".padStart(maxNameLen, " ")} │ ${qpPretty} │\n└${"─".repeat(maxNameLen + 2)}┴${"─".repeat(qpPretty.length + 2)}┘\n`
+      )}│ ${"QP".padStart(maxNameLen, " ")} │ ${qpPretty.padEnd(maxNumLen, " ")} │\n└${"─".repeat(maxNameLen + 2)}┴${"─".repeat(maxNumLen + 2)}┘\n`
   );
 }
