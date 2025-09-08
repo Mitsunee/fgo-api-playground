@@ -1,7 +1,11 @@
 import { ClassBoardSquareFlag } from "@atlasacademy/api-connector/dist/Schema/ClassBoard";
-import type { ClassBoard } from "@atlasacademy/api-connector/dist/Schema/ClassBoard";
+import type {
+  ClassBoard,
+  ClassBoardLine
+} from "@atlasacademy/api-connector/dist/Schema/ClassBoard";
 import type { ItemProcessor } from "./processItemData";
 import { convertClassName } from "./classNames";
+import { log } from "~/utils/logger";
 
 export function createClassScoreProcessor(itemProcessor: ItemProcessor) {
   const scoreMap: Record<ID, ClassScore> = {};
@@ -97,10 +101,51 @@ export function createClassScoreProcessor(itemProcessor: ItemProcessor) {
       }
 
       // process lines
+      const mergedLines = new Set<ClassBoardLine>();
       for (const line of boardJP.lines) {
+        if (mergedLines.has(line)) continue;
         const prev = score.nodes[line.prevSquareId];
-        const next = score.nodes[line.nextSquareId];
-        if (!prev || !next) continue;
+        let { nextSquareId } = line;
+        let next: ClassScoreNode | undefined = score.nodes[nextSquareId];
+
+        if (!next) {
+          log.debug(
+            `Attempting to bridge to next known node from line ${line.prevSquareId}=>${line.nextSquareId} on board ${score.name}`
+          );
+        }
+
+        while (!next) {
+          const merge = boardJP.lines.find(
+            candidate => candidate.prevSquareId == nextSquareId
+          );
+          if (!merge) {
+            log.warn(
+              `No suitable merge candidate found for line ${line.prevSquareId}=>${line.nextSquareId}`
+            );
+            break;
+          }
+
+          log.debug(
+            `Merging with line ${merge.prevSquareId}=>${merge.nextSquareId}`
+          );
+          next = score.nodes[merge.nextSquareId];
+          nextSquareId = merge.nextSquareId;
+          mergedLines.add(merge);
+        }
+
+        if (!next) {
+          log.error(
+            `Missing next node ${line.nextSquareId} (or further connection) for line ${line.prevSquareId}=>${line.nextSquareId}`
+          );
+          continue;
+        }
+
+        if (!prev) {
+          log.warn(
+            `Missing prev node ${line.prevSquareId} for line ${line.prevSquareId}=>${line.nextSquareId}`
+          );
+          continue;
+        }
         prev.next.push(next.id);
       }
 
