@@ -3,11 +3,11 @@ const textGlobals = `Global options:
   -h,--help       Print this help text and exit
   -s,--show-all   Always show all runs, even if already possible with current AP`;
 
-const textCalc = `calculate:
+const textCalc = (max: number) => `calculate:
   ap-calc [-vs] [--max <num>] [--node <num>] [--target <num>] <current-ap> [<current-timer>]
 
   Options:
-    -m,--max      Override for Max AP (Default: 144)
+    -m,--max      Override for Max AP (Default: ${max})
     -n,--node     Node Cost (shows all possible (future) runs; optional)
     -t,--target   Sets target AP (optional)
 
@@ -34,13 +34,13 @@ const textPrev = `prev:
 
   Alias for running the script as "history prev"`;
 
-export function commandHelp(positionals: string[]) {
+export function commandHelp(positionals: string[], max: number) {
   let text = `AP Calculator\n\n${textGlobals}`;
   const param = positionals.find(str => str != "help");
 
   switch (param) {
     case "calculate":
-      text += `\n\n${textCalc}`;
+      text += `\n\n${textCalc(max)}`;
       break;
     case "history":
       text += `\n\n${textHistory}`;

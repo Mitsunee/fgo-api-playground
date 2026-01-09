@@ -7,6 +7,8 @@ import { join } from "path";
 import { ScriptHistory } from "./ScriptHistory";
 import { commandHelp } from "./commandHelp";
 
+const MAX_AP = 148;
+
 const timer = createTimer();
 const globalOpts = {
   verbose: { type: "boolean", short: "v", default: false },
@@ -55,7 +57,7 @@ function commandCalculate() {
     args: process.argv.slice(2),
     options: {
       ...globalOpts,
-      max: { type: "string", short: "m", default: "144" },
+      max: { type: "string", short: "m", default: MAX_AP.toString() },
       target: { type: "string", short: "t" },
       node: { type: "string", short: "n" }
     },
@@ -68,7 +70,7 @@ function commandCalculate() {
     value: args.values.max,
     name: "--max",
     min: 20,
-    fallback: 144
+    fallback: MAX_AP
   });
   const nodeCost = parseNumericArg({
     value: args.values.node,
@@ -126,7 +128,7 @@ async function main() {
 
   // handle help command
   if (argsInit.values.help || firstPositional == "help") {
-    commandHelp(argsInit.positionals);
+    commandHelp(argsInit.positionals, MAX_AP);
     return;
   }
 
